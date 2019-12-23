@@ -1,16 +1,16 @@
 #include "moveValidator.h"
-
+#include "Board.h"
 int main(void)
 {
 	
-	
-	std::cout << moveValidator::knightMove("B8C7");
-	std::cout << moveValidator::knightMove("D7D5");
-	std::cout << moveValidator::knightMove("H5F6");
-	std::cout << moveValidator::knightMove("A6G4");
-	std::cout << moveValidator::knightMove("E5H2");
-	std::cout << moveValidator::knightMove("H8F1");
-	std::cout << moveValidator::knightMove("F3D2");
-
+	Board b;
+	for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			std::cout << b.getBoard()[i][j] << ',';
+		}
+		std::cout << '\n';
+	}
 	return 0;
 }

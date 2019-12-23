@@ -3,12 +3,12 @@
 #include "Piece.h"
 
 #define BOARD_SIZE 8
-
+#define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 class Board
 {
 private:
 	std::string _board[BOARD_SIZE];
-	std::vector<Piece*> _alivePieces;
+	std::vector<Piece*> _pieces;
 
 public:
 	// c'tor and d'tor
@@ -19,7 +19,7 @@ public:
 	Piece* getPiece(std::string location);
 	std::string* getBoard();
 	std::vector<Piece*> getAlivePieces();
-	void removePiece(std::string location);
+	bool removePiece(std::string location);
 	void setBoard(unsigned char x, unsigned char y, char piece);
 };
 

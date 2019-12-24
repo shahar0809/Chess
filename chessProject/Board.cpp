@@ -3,7 +3,7 @@
 // c'tor.
 Board::Board()
 {
-	
+	this->_currPlayer = 0;
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
 		for (int j = 0; j < BOARD_SIZE; j++)
@@ -32,6 +32,11 @@ std::string* Board::getBoard()
 std::vector<Piece*> Board::getAlivePieces()
 {
 	return this->_pieces;
+}
+
+unsigned int Board::getCurrPlayer()
+{
+	return this->_currPlayer;
 }
 
 /*
@@ -91,3 +96,10 @@ void Board::setBoard(unsigned char x, unsigned char y, char piece)
 {
 	this->_board[x - 'a'][y - '0'] = piece;
 }
+
+//setters.
+void Board::setCurrPlayer(unsigned int newCurrPlayer)
+{
+	this->_currPlayer = newCurrPlayer;
+}
+

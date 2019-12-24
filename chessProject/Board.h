@@ -9,6 +9,7 @@ class Board
 private:
 	std::string _board[BOARD_SIZE];
 	std::vector<Piece*> _pieces;
+	unsigned int _currPlayer;
 
 public:
 	// c'tor and d'tor
@@ -21,5 +22,7 @@ public:
 	std::vector<Piece*> getAlivePieces();
 	bool removePiece(std::string location);
 	void setBoard(unsigned char x, unsigned char y, char piece);
+	void setCurrPlayer(unsigned int newCurrPlayer);
+	unsigned int getCurrPlayer();
 };
 

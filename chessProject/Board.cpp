@@ -82,7 +82,12 @@ bool Board::removePiece(std::string location)
 	return isTargetFound;
 }
 
+/*
+This method assigns a piece on a location on the board.
+Input: The x and y of the piece and its siganture.
+Output: None.
+*/
 void Board::setBoard(unsigned char x, unsigned char y, char piece)
 {
-
+	this->_board[x - 'a'][y - '0'] = piece;
 }

@@ -10,8 +10,11 @@
 #define MIN_INDEX_ROW '1'
 #define BOARD_SIZE 8
 #define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
+
 class Piece;
 class King;
+
+=======
 
 class Board
 {
@@ -33,7 +36,10 @@ public:
 	void setBoard(unsigned char x, unsigned char y, char piece);
 	void setCurrPlayer(unsigned int newCurrPlayer);
 	unsigned int getCurrPlayer();
+
 	King* getKing(bool isBlack);
 	unsigned int makeMove(std::string move);
+=======
+
 };
 

@@ -3,6 +3,9 @@
 class King;
 
 // c'tor
+=======
+//c'tor
+
 Piece::Piece(std::string location, bool isBlack)
 {
 	this->_currLocation = location;
@@ -10,10 +13,15 @@ Piece::Piece(std::string location, bool isBlack)
 	this->_isAlive = true;
 }
 
+
 // d'tor
+=======
+//d'tor
+
 Piece::~Piece()
 {
 }
+
 
 // setter
 void Piece::setIsAlive(bool isAlive)
@@ -22,6 +30,9 @@ void Piece::setIsAlive(bool isAlive)
 }
 
 // getters
+=======
+//Getters.
+
 bool Piece::isAlive()
 {
 	return this->_isAlive;
@@ -36,6 +47,7 @@ std::string Piece::getCurrLocation()
 {
 	return this->_currLocation;
 }
+
 
 // methods
 /*
@@ -121,3 +133,10 @@ unsigned int Piece::isMoveValid(std::string move, Board& board)
 		return VALID_MOVE;
 	}
 }
+=======
+//setters.
+void Piece::setIsAlive(bool isAlive)
+{
+	this->_isAlive = isAlive;
+}
+

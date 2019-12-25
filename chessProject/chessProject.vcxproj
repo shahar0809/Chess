@@ -139,14 +139,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
+    <ClCompile Include="King.cpp" />
     <ClCompile Include="moveValidator.cpp" />
     <ClCompile Include="Piece.cpp" />
+    <ClCompile Include="Rook.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Board.h" />
+    <ClInclude Include="King.h" />
     <ClInclude Include="moveValidator.h" />
     <ClInclude Include="Piece.h" />
+    <ClInclude Include="Rook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,7 +15,7 @@ moveValidator::~moveValidator()
 /*
 This static function checks if a move is a sideways move.
 Input: moving string.
-Output: Returns the number of squares moved sideways. negative sign reprasants decrease of board position value.
+Output: Returns the number of squares moved sideways. negative sign represents decrease of board position value.
 */
 int moveValidator::moveSideways(std::string move)
 {
@@ -30,10 +30,11 @@ int moveValidator::moveSideways(std::string move)
 	{
 		stepCounter = deltaY; // return the CHANGE.
 	}
-	else if (!deltaY)// If on the same row.
+	else if (!deltaY) // If on the same row.
 	{
 		stepCounter = deltaX;
 	}
+
 	return stepCounter;
 }
 

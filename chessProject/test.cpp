@@ -1,16 +1,8 @@
-#include "moveValidator.h"
-#include "Board.h"
+#include "Game.h"
+
 int main(void)
 {
-	
-	Board b;
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			std::cout << b.getBoard()[i][j] << ',';
-		}
-		std::cout << '\n';
-	}
+	Game g;
+	Rook* r = new Rook("a1", false);
 	return 0;
 }

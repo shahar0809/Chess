@@ -1,10 +1,14 @@
 #pragma once
-#include <iostream>
-#include "Board.h"
 #include "moveValidator.h"
+#include "Board.h"
 
 class Board;
-enum INDEX_MOVMENTS { SRC_COL = 0, SRC_ROW = 1, DEST_COL = 2, DEST_ROW = 3 };
+
+#define SRC_COL  0
+#define SRC_ROW 1
+#define DEST_COL 2
+#define DEST_ROW 3
+
 
 enum CODES
 {
@@ -42,10 +46,11 @@ public:
 	bool isAlive();
 	bool isBlack();
 	std::string getCurrLocation();
-	unsigned int isMoveValid(std::string move, Board& board);
+	
+	CODES isMoveValid(std::string move, Board& board, Piece* srcPiece, Piece* dstPiece);
 
 	// pure virtual methods
-	virtual bool isMoveValidPiece(std::string move, Board& board) = 0;
+	virtual CODES isMoveValidPiece(std::string move, Board& board) = 0;
 	virtual void movePiece(std::string move, Board& board) = 0;
 	virtual char pieceType() = 0;
 };

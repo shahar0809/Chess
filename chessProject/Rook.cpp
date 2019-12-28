@@ -16,13 +16,13 @@ The method checks if the move inputted is valid for a rook.
 Input: The move (string)
 Output: Valid - true / Invalid - false
 */
-CODES Rook::isMoveValidPiece(std::string move, Board& board, Game& game)
+CODES Rook::isMoveValidPiece(std::string move, Board& board, std::vector<Piece*> pieces)
 {
 	int numOfSteps = moveValidator::moveSideways(move), col = 0, row = 0, max = 0;
 	std::string src = move.substr(0, move.length() / 2);
 	std::string dst = move.substr(DEST_COL, move.length() / 2);
-	Piece* srcPiece = game.getPiece(src);
-	Piece* dstPiece = game.getPiece(dst);
+	Piece* srcPiece = pieceVectorMethods::getPiece(src, pieces);
+	Piece* dstPiece = pieceVectorMethods::getPiece(dst, pieces);
 	King* currKing = game.getKing(board.getCurrPlayer());
 	King* otherKing = game.getKing(!board.getCurrPlayer());
 	std::string currLocation = "  ";
@@ -91,21 +91,7 @@ CODES Rook::isMoveValidPiece(std::string move, Board& board, Game& game)
 			}
 		}
 	}
-	/*0 & 1 - Checking that the move is valid for the specific piece.*/
-	this->movePiece(move, board);
-	// Checking if a check is made by making the move.
-	if (otherKing->isAttacked(board))
-	{
-		/*Undoing the move*/
-		this->movePiece(dst + src, board); 
-		dstPiece->setIsAlive(true);
-		return VALID_MOVE_CHECK;
-	}
-
-	/*Undoing the move*/
-	this->movePiece(dst + src, board);
-	dstPiece->setIsAlive(true);
-	return VALID_MOVE;
+	
 }
 
 /*

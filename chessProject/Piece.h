@@ -1,8 +1,5 @@
 #pragma once
 #include "moveValidator.h"
-#include "Board.h"
-
-class Board;
 
 #define SRC_COL  0
 #define SRC_ROW 1
@@ -47,10 +44,9 @@ public:
 	bool isBlack();
 	std::string getCurrLocation();
 	
-	CODES isMoveValid(std::string move, Board& board, Piece* srcPiece, Piece* dstPiece);
+	
 
 	// pure virtual methods
-	virtual CODES isMoveValidPiece(std::string move, Board& board) = 0;
-	virtual void movePiece(std::string move, Board& board) = 0;
+	virtual CODES isMoveValidPiece(std::string move) = 0;
 	virtual char pieceType() = 0;
 };

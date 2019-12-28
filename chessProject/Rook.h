@@ -1,9 +1,9 @@
 #pragma once
-#include "Game.h"
+#include "Piece.h"
+
 
 class Piece;
-class Board;
-class Game;
+
 
 class Rook : public Piece
 {
@@ -13,8 +13,7 @@ public:
 	~Rook();
 
 	// virtual methods (from Piece)
-	virtual CODES isMoveValidPiece(std::string move, Board& board, Game& game);
-	virtual void movePiece(std::string move, Board& board);
+	virtual CODES isMoveValidPiece(std::string move);
 	virtual char pieceType();
 
 	

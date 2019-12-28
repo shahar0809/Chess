@@ -13,12 +13,15 @@
 
 
 class Piece;
+class Rook;
+class King;
 
 
 class Board
 {
 private:
 	std::string _board[BOARD_SIZE];
+	std::vector<Piece*> _pieces;
 	unsigned int _currPlayer;
 
 public:
@@ -31,8 +34,9 @@ public:
 	void setBoard(unsigned char x, unsigned char y, char piece);
 	void setCurrPlayer(unsigned int newCurrPlayer);
 	unsigned int getCurrPlayer();
-
-
-
+	CODES isMoveValid(std::string move);
+	Piece* getPiece(std::string location);
+	King* getKing(bool isBlack);
+	bool isKingAttacked(King* king);
 };
 

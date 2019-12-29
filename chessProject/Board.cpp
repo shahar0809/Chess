@@ -12,23 +12,19 @@ Board::Board()
 			this->_board[i] += STARTING_BOARD[i * BOARD_SIZE + j];
 		}
 	}
-
-
 }
 
 //d'tor.
 Board::~Board()
 {
-	for (int i = 0; i < this->_pieces.size(); i++)
-	{
-		delete this->_pieces[i];
-	}
+	
 }
 
 unsigned int Board::getNumOfPieces()
 {
 	return this->_pieces.size();
 }
+
 
 std::vector<Piece*> Board::getPieces()
 {
@@ -46,6 +42,37 @@ unsigned int Board::getCurrPlayer()
 	return this->_currPlayer;
 }
 
+//setters.
+void Board::setCurrPlayer(unsigned int newCurrPlayer)
+{
+	this->_currPlayer = newCurrPlayer;
+}
+
+/*
+This method remove a piece from the board and from the vector after it was eaten.
+Input: The location of the piece to remove.
+Output: True of the piece was found and deleted. else false.
+*/
+bool Board::removePiece(std::string location)
+{
+	int len = 0;
+	Piece* target = nullptr;
+	bool isTargetFound = false;
+	target = this->getPiece(location);
+
+	if (target)
+	{
+		// x && y of piece.
+
+		this->setBoard(target->getCurrLocation()[0] - MIN_INDEX_COL, target->getCurrLocation()[1] - MIN_INDEX_ROW - 1, '#');
+
+		target->setIsAlive(false);
+		isTargetFound = true;
+	}
+
+	return isTargetFound;
+}
+
 /*
 This method assigns a piece on a location on the board.
 Input: The x and y of the piece and its siganture.
@@ -56,10 +83,29 @@ void Board::setBoard(char x, char y, char piece)
 	this->_board[x - MIN_INDEX_ROW][y - MIN_INDEX_COL] = piece;
 }
 
-//setters.
-void Board::setCurrPlayer(unsigned int newCurrPlayer)
+/*
+This method searches for a piece on a current location on the board.
+Input: The location of the piece to find.
+Output: Returns a pointer to the piece if found, else nullptr.
+*/
+Piece* Board::getPiece(std::string location)
 {
-	this->_currPlayer = newCurrPlayer;
+	Piece* target = nullptr;
+	int len = 0;
+	bool isTargetFound = false;
+
+
+	len = this->_pieces.size();
+
+	for (int i = 0; (i < len) && !isTargetFound; i++)
+	{
+		if (this->_pieces[i]->getCurrLocation() == location)
+		{
+			target = this->_pieces[i];
+			isTargetFound = true;
+		}
+	}
+	return target;
 }
 
 bool Board::isKingAttacked(King* king)
@@ -84,11 +130,14 @@ CODES Board::isMoveValid(std::string move)
 	King* currKing = this->getKing(this->_currPlayer);
 
 	if (!srcPiece)
+	{
 		return NO_PIECE_IN_SRC;
+	}
 
 	/*2 - Checking that there's a piece of the current player in the src cell.*/
 	if (srcPiece->isBlack() != this->getCurrPlayer())
 	{
+
 		return NO_PIECE_IN_SRC;
 	}
 
@@ -104,7 +153,6 @@ CODES Board::isMoveValid(std::string move)
 	{
 		return INVALID_INDEX;
 	}
-
 
 	/*7 - The src cell is also the dest cell.*/
 	if (move[SRC_COL] == move[DEST_COL] && move[SRC_ROW] == move[DEST_ROW])
@@ -180,56 +228,6 @@ void Board::addPiece(Piece* piece)
 	this->setBoard(piece->getCurrLocation()[1], piece->getCurrLocation()[0], piece->pieceType());
 }
 
-
-/*
-This method remove a piece from the board and from the vector after it was eaten.
-Input: The location of the piece to remove.
-Output: True of the piece was found and deleted. else false.
-*/
-bool Board::removePiece(std::string location)
-{
-	int len = 0;
-	Piece* target = nullptr;
-	bool isTargetFound = false;
-	target = this->getPiece(location);
-
-	if (target)
-	{
-		// x && y of piece.
-
-		this->setBoard(target->getCurrLocation()[0] - MIN_INDEX_COL, target->getCurrLocation()[1] - MIN_INDEX_ROW - 1, '#');
-
-		target->setIsAlive(false);
-		isTargetFound = true;
-	}
-
-	return isTargetFound;
-}
-
-/*
-This method searches for a piece on a current location on the board.
-Input: The location of the piece to find.
-Output: Returns a pointer to the piece if found, else nullptr.
-*/
-Piece* Board::getPiece(std::string location)
-{
-	Piece* target = nullptr;
-	int len = 0;
-	bool isTargetFound = false;
-
-	len = this->_pieces.size();
-
-	for (int i = 0; (i < len) && !isTargetFound; i++)
-	{
-		if (this->_pieces[i]->getCurrLocation() == location)
-		{
-			target = this->_pieces[i];
-			isTargetFound = true;
-		}
-	}
-	return target;
-}
-
 unsigned int Board::makeMove(std::string move)
 {
 	/*Getting the pieces at the dest and src locations.*/
@@ -239,6 +237,7 @@ unsigned int Board::makeMove(std::string move)
 	Piece* dstPiece = this->getPiece(dst);
 	CODES resultCode = this->isMoveValid(move);
 	std::cout << "\n" << resultCode << "\n";
+
 	// Making the move only if move is valid.
 	if (resultCode == VALID_MOVE || resultCode == VALID_MOVE_CHECK)
 	{

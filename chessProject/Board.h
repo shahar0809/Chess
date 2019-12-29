@@ -6,11 +6,9 @@
 #define BOARD_SIZE 8
 #define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
-
 class Piece;
 class Rook;
 class King;
-class pieceVectorMethods;
 
 class Board
 {
@@ -26,6 +24,7 @@ public:
 
 	// methods
 	std::string* getBoard();
+
 	void setBoard(char x, char y, char piece);
 	void setCurrPlayer(unsigned int newCurrPlayer);
 	unsigned int getCurrPlayer();

@@ -8,14 +8,9 @@ King::~King()
 {
 }
 
-CODES King::isMoveValidPiece(std::string move, Board& board, Game& game)
+bool King::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 {
-	return VALID_MOVE;
-}
-
-void King::movePiece(std::string move, Board& board)
-{
-
+	return true;
 }
 
 char King::pieceType()

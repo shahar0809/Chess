@@ -3,7 +3,6 @@
 
 class Piece;
 class Board;
-class Game;
 
 class King : public Piece
 {
@@ -13,8 +12,7 @@ public:
 	~King();
 
 	// virtual methods (from Piece)
-	virtual CODES isMoveValidPiece(std::string move, Board& board, Game& game);
-	virtual void movePiece (std::string move, Board& board);
+	virtual bool isMoveValidPiece(std::string move, std::vector<Piece*> pieces);
 	virtual char pieceType();
 	bool isAttacked(Board& board);
 };

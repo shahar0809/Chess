@@ -21,6 +21,7 @@ void Piece::setIsAlive(bool isAlive)
 	this->_isAlive = isAlive;
 }
 
+
 void Piece::setLocation(std::string location)
 {
 	if (!(location[SRC_COL] < MIN_INDEX_COL || location[SRC_COL] > MAX_INDEX_COL || location[SRC_ROW] < MIN_INDEX_ROW || location[SRC_ROW] > MAX_INDEX_ROW))
@@ -43,4 +44,5 @@ bool Piece::isBlack()
 std::string Piece::getCurrLocation()
 {
 	return this->_currLocation;
+
 }

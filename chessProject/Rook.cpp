@@ -25,12 +25,11 @@ bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 	char row = '0', col = '0', max = '0';
 	bool blockingPieceFound = false;
 
-	/*6 - Checking if the move is valid for the specific piece.*/
 	if (0 == numOfSteps)
 	{
 		return false;
 	}
-	
+
 	/*Same column*/
 	if (move[SRC_COL] == move[DEST_COL])
 	{
@@ -42,6 +41,7 @@ bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 		for (row; row < max; row++)
 		{
 			currLocation[SRC_ROW] = row;
+
 
 			for (int i = 0; i < pieces.size() || blockingPieceFound; i++)
 			{
@@ -78,6 +78,7 @@ bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 			{
 				return false;
 			}
+	
 			blockingPieceFound = false;
 		}
 	}

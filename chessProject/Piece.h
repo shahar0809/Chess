@@ -12,6 +12,10 @@
 #define MIN_INDEX_COL 'a'
 #define MIN_INDEX_ROW '1'
 
+#define SRC_COL  0
+#define SRC_ROW 1
+#define DEST_COL 2
+#define DEST_ROW 3
 
 enum CODES
 {
@@ -50,9 +54,11 @@ public:
 	bool isAlive();
 	bool isBlack();
 	std::string getCurrLocation();
+
 	void setLocation(std::string location);
 
 	// pure virtual methods
 	virtual bool isMoveValidPiece(std::string move, std::vector<Piece*> pieces) = 0;
+
 	virtual char pieceType() = 0;
 };

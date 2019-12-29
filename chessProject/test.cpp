@@ -1,16 +1,17 @@
-#include "moveValidator.h"
 #include "Board.h"
+#include "Rook.h"
+
 int main(void)
 {
+	Board board = Board();
+	board.printBoard();
+	Rook* rook = new Rook("a8", false);
+	Rook* rook2 = new Rook("a5", false);
+	board.addPiece(rook);
+	board.addPiece(rook2);
+	board.printBoard();
+	board.makeMove("a8a5");
+	board.printBoard();
 	
-	Board b;
-	for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			std::cout << b.getBoard()[i][j] << ',';
-		}
-		std::cout << '\n';
-	}
 	return 0;
 }

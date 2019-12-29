@@ -1,11 +1,19 @@
 #include "King.h"
 
-bool King::isMoveValidPiece(std::string move)
+King::King(std::string location, bool isBlack) : Piece(location, isBlack)
 {
-
 }
 
-void King::move(std::string move, Board& board)
+King::~King()
+{
+}
+
+CODES King::isMoveValidPiece(std::string move, Board& board, Game& game)
+{
+	return VALID_MOVE;
+}
+
+void King::movePiece(std::string move, Board& board)
 {
 
 }
@@ -24,5 +32,5 @@ char King::pieceType()
 
 bool King::isAttacked(Board& board)
 {
-
+	return false;
 }

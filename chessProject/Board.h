@@ -2,19 +2,15 @@
 #include <vector>
 #include <string>
 #include "Piece.h"
-#include "King.h"
 
-#define MAX_INDEX_COL 'h'
-#define MAX_INDEX_ROW '8'
-#define MIN_INDEX_COL 'a'
-#define MIN_INDEX_ROW '1'
 #define BOARD_SIZE 8
 #define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
-class Piece;
-class King;
 
-=======
+class Piece;
+class Rook;
+class King;
+class pieceVectorMethods;
 
 class Board
 {
@@ -29,17 +25,20 @@ public:
 	~Board();
 
 	// methods
-	Piece* getPiece(std::string location);
 	std::string* getBoard();
-	std::vector<Piece*> getAlivePieces();
-	bool removePiece(std::string location);
-	void setBoard(unsigned char x, unsigned char y, char piece);
+	void setBoard(char x, char y, char piece);
 	void setCurrPlayer(unsigned int newCurrPlayer);
 	unsigned int getCurrPlayer();
-
-	King* getKing(bool isBlack);
+	CODES isMoveValid(std::string move);
+	
+	bool isKingAttacked(King* king);
+	unsigned int getNumOfPieces();
+	std::vector<Piece*> getPieces();
+	void printBoard();
+	void addPiece(Piece* piece);
+	bool removePiece(std::string location);
+	Piece* getPiece(std::string location);
 	unsigned int makeMove(std::string move);
-=======
-
+	King* getKing(bool isBlack);
 };
 

@@ -1,10 +1,17 @@
 #pragma once
-#include <iostream>
-#include "Board.h"
 #include "moveValidator.h"
+#include <vector>
 
-class Board;
-enum INDEX_MOVMENTS { SRC_COL = 0, SRC_ROW = 1, DEST_COL = 2, DEST_ROW = 3 };
+#define SRC_COL  0
+#define SRC_ROW 1
+#define DEST_COL 2
+#define DEST_ROW 3
+
+#define MAX_INDEX_COL 'h'
+#define MAX_INDEX_ROW '8'
+#define MIN_INDEX_COL 'a'
+#define MIN_INDEX_ROW '1'
+
 
 enum CODES
 {
@@ -21,7 +28,8 @@ enum CODES
 enum PIECES_TYPES
 {
 	WHITE_ROOK = 'R', WHITE_BISHOP = 'B', WHITE_QUEEN = 'Q', WHITE_KING = 'K', WHITE_PAWN = 'P',
-	BLACK_ROOK = 'r', BLACK_BISHOP = 'b', BLACK_QUEEN = 'q', BLACK_KING = 'k', BLACK_PAWN = 'p'
+	BLACK_ROOK = 'r', BLACK_BISHOP = 'b', BLACK_QUEEN = 'q', BLACK_KING = 'k', BLACK_PAWN = 'p',
+	EMPTY_CELL = '#'
 };
 
 /*Abstract class Piece*/
@@ -42,10 +50,9 @@ public:
 	bool isAlive();
 	bool isBlack();
 	std::string getCurrLocation();
-	unsigned int isMoveValid(std::string move, Board& board);
+	void setLocation(std::string location);
 
 	// pure virtual methods
-	virtual bool isMoveValidPiece(std::string move, Board& board) = 0;
-	virtual void movePiece(std::string move, Board& board) = 0;
+	virtual bool isMoveValidPiece(std::string move, std::vector<Piece*> pieces) = 0;
 	virtual char pieceType() = 0;
 };

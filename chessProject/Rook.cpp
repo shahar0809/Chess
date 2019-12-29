@@ -16,14 +16,17 @@ The method checks if the move inputted is valid for a rook.
 Input: The move (string)
 Output: Valid - true / Invalid - false
 */
-bool Rook::isMoveValidPiece(std::string move, Board& board)
+bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 {
-	int numOfSteps = moveValidator::moveSideways(move), col = 0, row = 0, max = 0;
-	Piece* currPiece = NULL;
-	std::string currLocation = "  ";
+	int numOfSteps = moveValidator::moveSideways(move);
+	std::string src = move.substr(0, move.length() / 2);
+	std::string dst = move.substr(DEST_COL, move.length() / 2);
+	std::string currLocation = "00";
+	char row = '0', col = '0', max = '0';
+	bool blockingPieceFound = false;
 
-	/*If the move isn't sideways, then the move isn't valid.*/
-	if (numOfSteps == 0)
+	/*6 - Checking if the move is valid for the specific piece.*/
+	if (0 == numOfSteps)
 	{
 		return false;
 	}
@@ -39,10 +42,18 @@ bool Rook::isMoveValidPiece(std::string move, Board& board)
 		for (row; row < max; row++)
 		{
 			currLocation[SRC_ROW] = row;
-			if (board.getPiece(currLocation))
+
+			for (int i = 0; i < pieces.size() || blockingPieceFound; i++)
+			{
+				if (pieces[i]->getCurrLocation() == currLocation)
+					blockingPieceFound = true;
+			}
+
+			if (blockingPieceFound)
 			{
 				return false;
 			}
+			blockingPieceFound = false;
 		}
 	}
 	/*Same row*/
@@ -52,42 +63,25 @@ bool Rook::isMoveValidPiece(std::string move, Board& board)
 		col = move[SRC_COL] < move[DEST_COL] ? move[SRC_COL] : move[DEST_COL];
 		max = move[SRC_COL] > move[DEST_COL] ? move[SRC_COL] : move[DEST_COL];
 
-		/*Checking if there's a piece between the src piece and the dest piece (in all the columns between them).*/
+		/*Checking if there's a piece between the src piece and the dest piece (in all the rows between them).*/
 		for (col; col < max; col++)
 		{
 			currLocation[SRC_COL] = col;
-			if (board.getPiece(currLocation))
+
+			for (int i = 0; i < pieces.size() || blockingPieceFound; i++)
+			{
+				if (pieces[i]->getCurrLocation() == currLocation)
+					blockingPieceFound = true;
+			}
+
+			if (blockingPieceFound)
 			{
 				return false;
 			}
+			blockingPieceFound = false;
 		}
 	}
-
 	return true;
-}
-
-/*
-This function moves the rook on the board according to the move inputted.
-Input: The move (string), and the board (a reference to a Board object).
-Output: None.
-*/
-void Rook::movePiece(std::string move, Board& board)
-{
-	int numOfSteps = moveValidator::moveSideways(move);
-	
-	// setting the new location of the rook
-	if (move[SRC_COL] == move[DEST_COL])
-	{
-		this->_currLocation[SRC_ROW] += moveValidator::moveSideways(move);
-	}
-	else
-	{
-		this->_currLocation[SRC_COL] += moveValidator::moveSideways(move);
-	}
-
-	// Moving the rook on the board
-	board.setBoard(move[SRC_ROW], move[SRC_COL], '#');
-	board.setBoard(move[DEST_ROW], move[DEST_COL], this->pieceType());
 }
 
 /*
@@ -97,7 +91,7 @@ Output: The rook's type (char).
 */
 char Rook::pieceType()
 {
-	if (this->isBlack)
+	if (this->isBlack())
 	{
 		return BLACK_ROOK;
 	}

@@ -8,8 +8,9 @@ class moveValidator
 {
 public:
 	static int moveSideways(std::string move);
+	static int moveBackOrForward(std::string move);
 	static int moveDiagonally(std::string move);
-	static int singleMove(std::string move);
+	static bool singleMove(std::string move);
 	static int knightMove(std::string move);
 	static int pawnEatingMove(std::string move);
 	moveValidator();

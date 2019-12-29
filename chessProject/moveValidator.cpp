@@ -19,23 +19,21 @@ Output: Returns the number of squares moved sideways. negative sign represents d
 */
 int moveValidator::moveSideways(std::string move)
 {
-	int stepCounter = 0; // Negative -> left move OR back move
-	int deltaX = 0;
-	int deltaY = 0;
-
-	deltaX = move[DEST_COL] - move[SRC_COL];
-	deltaY = move[DEST_ROW] - move[SRC_ROW];
-
-	if (!deltaX)//If on the same colon.
+	if (move[DEST_ROW] == move[SRC_ROW])
 	{
-		stepCounter = deltaY; // return the CHANGE.
+		return move[DEST_COL] - move[SRC_COL];
 	}
-	else if (!deltaY) // If on the same row.
-	{
-		stepCounter = deltaX;
-	}
+	return 0;
 
-	return stepCounter;
+}
+
+int moveValidator::moveBackOrForward(std::string move)
+{
+	if (move[DEST_COL] == move[SRC_COL])
+	{
+		return move[DEST_ROW] - move[SRC_ROW];
+	}
+	return 0;
 }
 
 /*
@@ -64,21 +62,20 @@ This static function checks if a move is only one square long.
 Input: moving string.
 Output: Returns 0 if not a single step,else 1, negative sign reprasants decrease of board position value.
 */
-int moveValidator::singleMove(std::string move)
+bool moveValidator::singleMove(std::string move)
 {
-	int direction = 0; //Negative, in case of diagonal value refered only by forward or backwards moves.
+	int side = 0; //Negative, in case of diagonal value refered only by forward or backwards moves.
+	int forward = 0;
+
+	side = moveSideways(move);
+	forward = moveBackOrForward(move);
 	
-	direction = moveSideways(move);
-	if (direction == 1 || abs(direction) == 1)
+	if (abs(side) > 1 || abs(forward) > 1)
 	{
-		return direction;
+		return false;
 	}
-	direction = moveDiagonally(move);
-	if (direction == 1 || abs(direction) == 1)
-	{
-		return direction;
-	}
-	return direction;
+
+	return true;
 	
 }
 

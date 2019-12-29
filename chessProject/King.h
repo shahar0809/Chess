@@ -12,7 +12,7 @@ public:
 	~King();
 
 	// virtual methods (from Piece)
-	virtual bool isMoveValidPiece(std::string move, std::vector<Piece*> pieces);
+	virtual bool isMoveValidPiece(std::string move);
 	virtual char pieceType();
 	bool isAttacked(Board& board);
 };

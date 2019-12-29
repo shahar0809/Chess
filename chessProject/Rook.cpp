@@ -16,9 +16,15 @@ The method checks if the move inputted is valid for a rook.
 Input: The move (string)
 Output: Valid - true / Invalid - false
 */
-bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
+bool Rook::isMoveValidPiece(std::string move)
 {
-	int numOfSteps = moveValidator::moveSideways(move);
+	int stepsSideways = moveValidator::moveSideways(move);
+	int stepsForwardOrBackward = moveValidator::moveBackOrForward(move);
+	
+	return stepsSideways ^ stepsForwardOrBackward;
+
+
+	/*
 	std::string src = move.substr(0, move.length() / 2);
 	std::string dst = move.substr(DEST_COL, move.length() / 2);
 	std::string currLocation = "00";
@@ -30,14 +36,14 @@ bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 		return false;
 	}
 
-	/*Same column*/
+	/*Same column
 	if (move[SRC_COL] == move[DEST_COL])
 	{
 		currLocation[SRC_COL] = move[SRC_COL];
 		row = move[SRC_ROW] < move[DEST_ROW] ? move[SRC_ROW] : move[DEST_ROW];
 		max = move[SRC_ROW] > move[DEST_ROW] ? move[SRC_ROW] : move[DEST_ROW];
 
-		/*Checking if there's a piece between the src piece and the dest piece (in all the rows between them).*/
+		/*Checking if there's a piece between the src piece and the dest piece (in all the rows between them).
 		for (row; row < max; row++)
 		{
 			currLocation[SRC_ROW] = row;
@@ -56,14 +62,14 @@ bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 			blockingPieceFound = false;
 		}
 	}
-	/*Same row*/
+	/*Same row
 	else
 	{
 		currLocation[SRC_ROW] = move[SRC_ROW];
 		col = move[SRC_COL] < move[DEST_COL] ? move[SRC_COL] : move[DEST_COL];
 		max = move[SRC_COL] > move[DEST_COL] ? move[SRC_COL] : move[DEST_COL];
 
-		/*Checking if there's a piece between the src piece and the dest piece (in all the rows between them).*/
+		/*Checking if there's a piece between the src piece and the dest piece (in all the rows between them).
 		for (col; col < max; col++)
 		{
 			currLocation[SRC_COL] = col;
@@ -82,7 +88,7 @@ bool Rook::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
 			blockingPieceFound = false;
 		}
 	}
-	return true;
+	return true;*/
 }
 
 /*

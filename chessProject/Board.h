@@ -2,9 +2,13 @@
 #include <vector>
 #include <string>
 #include "Piece.h"
+#include "King.h"
+#include "Rook.h"
+//Original board "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
+
 
 #define BOARD_SIZE 8
-#define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
+#define STARTING_BOARD "R###K##R################################################r###k##r"
 
 class Piece;
 class Rook;
@@ -39,5 +43,6 @@ public:
 	Piece* getPiece(std::string location);
 	unsigned int makeMove(std::string move);
 	King* getKing(bool isBlack);
+	bool isBlockingPiece(std::string dst, std::string src, char type);
 };
 

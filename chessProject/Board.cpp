@@ -12,12 +12,29 @@ Board::Board()
 			this->_board[i] += STARTING_BOARD[i * BOARD_SIZE + j];
 		}
 	}
+	
+	p = new Rook("a8", true);
+	this->_pieces.push_back(p);
+	p = new Rook("h8", true);
+	this->_pieces.push_back(p);
+	p = new Rook("a1", false);
+	this->_pieces.push_back(p);
+	p = new Rook("h1", false);
+	this->_pieces.push_back(p);
+	p = new King("e1", false);
+	this->_pieces.push_back(p);
+	p = new King("e8", true);
+	this->_pieces.push_back(p);
+
 }
 
 //d'tor.
 Board::~Board()
 {
-	
+	for (int i = 0; i < this->_pieces.size(); i++)
+	{
+		delete this->_pieces[i];
+	}
 }
 
 unsigned int Board::getNumOfPieces()
@@ -64,7 +81,7 @@ bool Board::removePiece(std::string location)
 	{
 		// x && y of piece.
 
-		this->setBoard(target->getCurrLocation()[0] - MIN_INDEX_COL, target->getCurrLocation()[1] - MIN_INDEX_ROW - 1, '#');
+		this->setBoard(location[SRC_ROW], location[SRC_COL], EMPTY_CELL);
 
 		target->setIsAlive(false);
 		isTargetFound = true;
@@ -80,7 +97,7 @@ Output: None.
 */
 void Board::setBoard(char x, char y, char piece)
 {
-	this->_board[x - MIN_INDEX_ROW][y - MIN_INDEX_COL] = piece;
+	this->_board[(int)(x - MIN_INDEX_ROW)][(int)(y - MIN_INDEX_COL)] = piece;
 }
 
 /*
@@ -99,7 +116,7 @@ Piece* Board::getPiece(std::string location)
 
 	for (int i = 0; (i < len) && !isTargetFound; i++)
 	{
-		if (this->_pieces[i]->getCurrLocation() == location)
+		if (this->_pieces[i]->getCurrLocation() == location && this->_pieces[i]->isAlive())
 		{
 			target = this->_pieces[i];
 			isTargetFound = true;
@@ -160,12 +177,13 @@ CODES Board::isMoveValid(std::string move)
 		return SRC_IS_DST;
 	}
 
-	/*0 & 1 - Checking that the move is valid for the specific piece.*/
-	if (!srcPiece->isMoveValidPiece(move, this->_pieces))
+	/*6 - check if the move is valid for the piece and it is not blocked by other piece*/
+	if (!srcPiece->isMoveValidPiece(move) || this->isBlockingPiece(dst, src, srcPiece->pieceType()))
 	{
 		return INVALID_PIECE_MOVE;
 	}
 
+	/*0 & 1 - Checking that the move is valid for the specific piece.*/
 	this->removePiece(dst);
 	srcPiece->setLocation(dst);
 	this->setBoard(dst[SRC_ROW], dst[SRC_COL], srcPiece->pieceType());
@@ -215,10 +233,10 @@ void Board::printBoard()
 {
 	std::cout << std::endl;
 	std::cout << "  abcdefgh" << std::endl;
-	for (int i = 0; i < BOARD_SIZE; i++)
+	for (int i = BOARD_SIZE; i > 0; i--)
 	{
-		std::cout << i + 1 << " ";
-		std::cout << this->_board[i] << std::endl;
+		std::cout << i << " ";
+		std::cout << this->_board[i - 1] << std::endl;
 	}
 }
 
@@ -246,6 +264,7 @@ unsigned int Board::makeMove(std::string move)
 		srcPiece->setLocation(dst);
 		this->setBoard(dst[SRC_ROW], dst[SRC_COL], srcPiece->pieceType());
 		this->setBoard(src[SRC_ROW], src[SRC_COL], EMPTY_CELL);
+		this->_currPlayer = !this->_currPlayer; // change player.
 	}
 
 	return resultCode;
@@ -270,4 +289,37 @@ King* Board::getKing(bool isBlack)
 		}
 	}
 	return nullptr;
+}
+
+bool Board::isBlockingPiece(std::string dst, std::string src, char type)
+{
+	int index = SRC_COL; //Change the col.
+	int change = 0; //check location.
+	
+	if (type == WHITE_ROOK || type == BLACK_ROOK)
+	{
+		if (dst[SRC_COL] == src[SRC_COL]) // Check what is changing, col or row.
+		{
+			index = SRC_ROW; // change the row.
+		}
+		change = dst[index] > src[index] ? 1 : -1;
+		while (dst != src)
+		{
+			src[index] += change;
+			if (this->getPiece(src) &&  src != dst)
+			{
+				return true;
+			}
+			
+		}
+		return false;
+	}
+
+	if (type == WHITE_KNIGHT || type == BLACK_KNIGHT || type == WHITE_KING || type == BLACK_KING)
+	{
+		return false;
+	}
+
+
+	return false;
 }

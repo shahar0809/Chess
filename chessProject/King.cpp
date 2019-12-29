@@ -8,9 +8,9 @@ King::~King()
 {
 }
 
-bool King::isMoveValidPiece(std::string move, std::vector<Piece*> pieces)
+bool King::isMoveValidPiece(std::string move)
 {
-	return true;
+	return moveValidator::singleMove(move);
 }
 
 char King::pieceType()

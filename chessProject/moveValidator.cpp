@@ -66,11 +66,12 @@ bool moveValidator::singleMove(std::string move)
 {
 	int side = 0; //Negative, in case of diagonal value refered only by forward or backwards moves.
 	int forward = 0;
+	int diagonal = 0;
 
 	side = moveSideways(move);
 	forward = moveBackOrForward(move);
-	
-	if (abs(side) > 1 || abs(forward) > 1)
+	diagonal = moveDiagonally(move);
+	if (((abs(side) > 1) || (abs(forward) > 1) || (abs(diagonal) > 1) || ((0 == forward) && (0 == side) && (0 == diagonal))))
 	{
 		return false;
 	}

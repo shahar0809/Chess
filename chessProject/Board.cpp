@@ -127,6 +127,20 @@ Piece* Board::getPiece(std::string location)
 
 bool Board::isKingAttacked(King* king)
 {
+	bool isBlack = king->isBlack();
+	std::string dst = king->getCurrLocation();
+	Piece* p = nullptr;
+	std::string src = "";
+
+	for (int i = 0; i< this->_pieces.size(); i++)
+	{
+		p = this->_pieces[i];
+		src = p->getCurrLocation();
+		if ((p->pieceType() != king->pieceType()) && (p->isBlack() != isBlack) && (p->isMoveValidPiece(src + dst)) && (!this->isBlockingPiece(dst, src, p->pieceType())))
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -146,13 +160,10 @@ CODES Board::isMoveValid(std::string move)
 	King* otherKing = this->getKing(!this->_currPlayer);
 	King* currKing = this->getKing(this->_currPlayer);
 
-	if (!srcPiece)
-	{
-		return NO_PIECE_IN_SRC;
-	}
+	
 
 	/*2 - Checking that there's a piece of the current player in the src cell.*/
-	if (srcPiece->isBlack() != this->getCurrPlayer())
+	if (!srcPiece || srcPiece->isBlack() != this->getCurrPlayer())
 	{
 
 		return NO_PIECE_IN_SRC;
@@ -183,11 +194,26 @@ CODES Board::isMoveValid(std::string move)
 		return INVALID_PIECE_MOVE;
 	}
 
-	/*0 & 1 - Checking that the move is valid for the specific piece.*/
+	/*0,1,4 - Checking checks.*/
 	this->removePiece(dst);
 	srcPiece->setLocation(dst);
 	this->setBoard(dst[SRC_ROW], dst[SRC_COL], srcPiece->pieceType());
 	this->setBoard(src[SRC_ROW], src[SRC_COL], EMPTY_CELL);
+
+	if (currKing && this->isKingAttacked(currKing))
+	{
+		/*Undoing the move*/
+		if (dstPiece)
+		{
+			this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
+			dstPiece->setIsAlive(true);
+		}
+		srcPiece->setLocation(src);
+		this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
+		this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
+
+		return SELF_CHECK;
+	}
 
 	// Checking if a check is made by making the move.
 	if (otherKing && this->isKingAttacked(otherKing))
@@ -200,22 +226,12 @@ CODES Board::isMoveValid(std::string move)
 		}
 		srcPiece->setLocation(src);
 		this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
+		this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
 
 		return VALID_MOVE_CHECK;
 	}
 
-	if (currKing && this->isKingAttacked(currKing))
-	{
-		/*Undoing the move*/
-		if (dstPiece)
-		{
-			this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
-			dstPiece->setIsAlive(true);
-		}
-		srcPiece->setLocation(src);
-		this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
-		return SELF_CHECK;
-	}
+	
 
 	/*Undoing the move*/
 	if (dstPiece)
@@ -225,6 +241,8 @@ CODES Board::isMoveValid(std::string move)
 	}
 	srcPiece->setLocation(src);
 	this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
+	this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
+
 	
 	return VALID_MOVE;
 }

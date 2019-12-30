@@ -31,8 +31,8 @@ enum CODES
 
 enum PIECES_TYPES
 {
-	WHITE_ROOK = 'R', WHITE_BISHOP = 'B', WHITE_QUEEN = 'Q', WHITE_KING = 'K', WHITE_PAWN = 'P', WHITE_KNIGHT = 'K',
-	BLACK_ROOK = 'r', BLACK_BISHOP = 'b', BLACK_QUEEN = 'q', BLACK_KING = 'k', BLACK_PAWN = 'p', BLACK_KNIGHT = 'k',
+	WHITE_ROOK = 'R', WHITE_BISHOP = 'B', WHITE_QUEEN = 'Q', WHITE_KING = 'K', WHITE_PAWN = 'P', WHITE_KNIGHT = 'N',
+	BLACK_ROOK = 'r', BLACK_BISHOP = 'b', BLACK_QUEEN = 'q', BLACK_KING = 'k', BLACK_PAWN = 'p', BLACK_KNIGHT = 'n',
 	EMPTY_CELL = '#'
 };
 
@@ -59,6 +59,5 @@ public:
 
 	// pure virtual methods
 	virtual bool isMoveValidPiece(std::string move) = 0;
-
 	virtual char pieceType() = 0;
 };

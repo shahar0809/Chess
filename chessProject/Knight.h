@@ -1,15 +1,11 @@
 #pragma once
 #include "Piece.h"
 
-class Piece;
-class Board;
-
-class King : public Piece
+class Knight : public Piece
 {
 public:
-	//c'tor and d'tor
-	King(std::string location, bool isBlack);
-	~King();
+	Knight(std::string move, bool isBlack);
+	~Knight();
 
 	// virtual methods (from Piece)
 	virtual bool isMoveValidPiece(std::string move);

@@ -77,7 +77,6 @@ bool moveValidator::singleMove(std::string move)
 	}
 
 	return true;
-	
 }
 
 /*

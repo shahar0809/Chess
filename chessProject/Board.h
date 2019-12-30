@@ -4,11 +4,15 @@
 #include "Piece.h"
 #include "King.h"
 #include "Rook.h"
+#include "Bishop.h"
+#include "Queen.h"
+#include "Knight.h"
+
 //Original board "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
 
 #define BOARD_SIZE 8
-#define STARTING_BOARD "R###K##R################################################r###k##r"
+#define STARTING_BOARD "RNBKQBNR################################################rnbkqbnr"
 
 class Piece;
 class Rook;
@@ -44,5 +48,6 @@ public:
 	unsigned int makeMove(std::string move);
 	King* getKing(bool isBlack);
 	bool isBlockingPiece(std::string dst, std::string src, char type);
+	char getPieceAt(char x, char y);
 };
 

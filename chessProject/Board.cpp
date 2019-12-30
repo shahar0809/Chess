@@ -13,6 +13,8 @@ Board::Board()
 		}
 	}
 	
+	/*Initializing board with the starting board.*/
+	/*Adding the 4 rooks.*/
 	p = new Rook("a8", true);
 	this->_pieces.push_back(p);
 	p = new Rook("h8", true);
@@ -21,9 +23,35 @@ Board::Board()
 	this->_pieces.push_back(p);
 	p = new Rook("h1", false);
 	this->_pieces.push_back(p);
+
+	/*Adding the 2 kings and queens.*/
 	p = new King("e1", false);
 	this->_pieces.push_back(p);
 	p = new King("e8", true);
+	this->_pieces.push_back(p);
+	p = new Queen("d8", true);
+	this->_pieces.push_back(p);
+	p = new Queen("d1", false);
+	this->_pieces.push_back(p);
+
+	/*Adding the 4 bishops.*/
+	p = new Bishop("c8", true);
+	this->_pieces.push_back(p);
+	p = new Bishop("c1", false);
+	this->_pieces.push_back(p);
+	p = new Bishop("f8", true);
+	this->_pieces.push_back(p);
+	p = new Bishop("f1", false);
+	this->_pieces.push_back(p);
+	
+	/*Adding the 4 knights.*/
+	p = new Knight("g8", true);
+	this->_pieces.push_back(p);
+	p = new Knight("b8", true);
+	this->_pieces.push_back(p);
+	p = new Knight("g1", false);
+	this->_pieces.push_back(p);
+	p = new Knight("b1", false);
 	this->_pieces.push_back(p);
 
 }
@@ -136,6 +164,8 @@ bool Board::isKingAttacked(King* king)
 	{
 		p = this->_pieces[i];
 		src = p->getCurrLocation();
+
+		/*Checking if piece p can eat the king.*/
 		if ((p->pieceType() != king->pieceType()) && (p->isBlack() != isBlack) && (p->isMoveValidPiece(src + dst)) && (!this->isBlockingPiece(dst, src, p->pieceType())))
 		{
 			return true;
@@ -156,16 +186,19 @@ CODES Board::isMoveValid(std::string move)
 	std::string dst = move.substr(DEST_COL, move.length() / 2);
 	Piece* srcPiece = this->getPiece(src);
 	Piece* dstPiece = this->getPiece(dst);
+
 	/*Getting the kings of each player.*/
 	King* otherKing = this->getKing(!this->_currPlayer);
 	King* currKing = this->getKing(this->_currPlayer);
 
-	
-
 	/*2 - Checking that there's a piece of the current player in the src cell.*/
-	if (!srcPiece || srcPiece->isBlack() != this->getCurrPlayer())
+	if (!srcPiece)
 	{
-
+		return NO_PIECE_IN_SRC;
+	}
+	
+	if (srcPiece->isBlack() != this->getCurrPlayer())
+	{
 		return NO_PIECE_IN_SRC;
 	}
 
@@ -208,9 +241,12 @@ CODES Board::isMoveValid(std::string move)
 			this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
 			dstPiece->setIsAlive(true);
 		}
+		else
+		{
+			this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
+		}
 		srcPiece->setLocation(src);
 		this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
-		this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
 
 		return SELF_CHECK;
 	}
@@ -224,14 +260,15 @@ CODES Board::isMoveValid(std::string move)
 			this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
 			dstPiece->setIsAlive(true);
 		}
+		else
+		{
+			this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
+		}
 		srcPiece->setLocation(src);
 		this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
-		this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
 
 		return VALID_MOVE_CHECK;
 	}
-
-	
 
 	/*Undoing the move*/
 	if (dstPiece)
@@ -239,11 +276,13 @@ CODES Board::isMoveValid(std::string move)
 		this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
 		dstPiece->setIsAlive(true);
 	}
+	else
+	{
+		this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
+	}
 	srcPiece->setLocation(src);
 	this->setBoard(src[SRC_ROW], src[SRC_COL], srcPiece->pieceType());
-	this->setBoard(dst[SRC_ROW], dst[SRC_COL], EMPTY_CELL);
 
-	
 	return VALID_MOVE;
 }
 
@@ -328,16 +367,54 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 			{
 				return true;
 			}
-			
 		}
 		return false;
 	}
 
-	if (type == WHITE_KNIGHT || type == BLACK_KNIGHT || type == WHITE_KING || type == BLACK_KING)
+	if (WHITE_KING == type || BLACK_KING == type || WHITE_KNIGHT == type || BLACK_KING == type)
 	{
 		return false;
 	}
 
+	if (type == BLACK_BISHOP || type == WHITE_BISHOP)
+	{
+		std::string currLocation = src[SRC_ROW] < dst[SRC_ROW] ? src : dst;
+		std::string maxLocation = src[SRC_ROW] > dst[SRC_ROW] ? src : dst;
+		
+		// If the src is on the right of the dst, then the loop checks from src (right) to dst (left). If not then from left to right.
+		int addBy = src[SRC_COL] < dst[SRC_COL] ? 1 : -1; 
 
+		/*Going over all the cells betweeen the src cell and the dst cell (bishop move).*/
+		while (currLocation[SRC_ROW] != maxLocation[SRC_ROW] - 1)
+		{
+			/*Moving to the next cell.*/
+			currLocation[SRC_COL] += addBy;
+			currLocation[SRC_ROW]++;
+
+			/*Checking if there's a piece in current location.*/
+			if (getPieceAt(currLocation[SRC_ROW], currLocation[SRC_COL]) != EMPTY_CELL) // fix here!
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	return false;
+}
+
+/*
+Gets the type of piece in cell [x][y] in the board.
+Input: Indices of the cell - x, y (chars).
+Output: The type of piece in the cell (char).
+*/
+char Board::getPieceAt(char x, char y)
+{
+	if (x >= MIN_INDEX_ROW && x <= MAX_INDEX_ROW && y >= MIN_INDEX_COL && y <= MAX_INDEX_COL)
+	{
+		return this->_board[x - MIN_INDEX_ROW][y - MIN_INDEX_COL];
+	}
+	else
+	{
+		return 0;
+	}
 }

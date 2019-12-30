@@ -24,8 +24,3 @@ char King::pieceType()
 		return WHITE_KING;
 	}
 }
-
-bool King::isAttacked(Board& board)
-{
-	return false;
-}

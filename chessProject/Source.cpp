@@ -17,8 +17,9 @@ using std::string;
 void main()
 {
 	srand(time_t(NULL));
-
+	char* message = nullptr;
 	Pipe p;
+	Board board = Board();
 	bool isConnect = p.connect();
 	
 	string ans;
@@ -41,15 +42,16 @@ void main()
 		}
 	}
 	
-	Board board = Board();
+	
 	char msgToGraphics[1024];
 	// msgToGraphics should contain the board string accord the protocol
 	// YOUR CODE
 
-	strcpy_s(msgToGraphics, board.initialBoardString()); // just example...
+	message = board.initialBoardString();
+	strcpy_s(msgToGraphics, message); // just example...
 	
 	p.sendMessageToGraphics(msgToGraphics);   // send the board string
-
+	delete message;
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 
@@ -61,13 +63,7 @@ void main()
 		const char resultCode = ((char)(board.makeMove(msgFromGraphics) + '0'));
 		// YOUR CODE
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
-
-		/******* JUST FOR EREZ DEBUGGING ******/
-		int r = rand() % 10; // just for debugging......
-		msgToGraphics[0] = (char)(1 + '0');
-		msgToGraphics[1] = 0;
-		/******* JUST FOR EREZ DEBUGGING ******/
-
+		msgToGraphics[1] = '\0';
 		// return result to graphics		
 		p.sendMessageToGraphics(msgToGraphics);   
 

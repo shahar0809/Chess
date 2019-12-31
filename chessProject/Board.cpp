@@ -355,13 +355,12 @@ CODES Board::makeMove(std::string move)
 		{
 			((Pawn*)(srcPiece))->setIsFirstMove(false);
 		}
-		this->_currPlayer = !this->_currPlayer; // change player
+		setCurrPlayer(!this->_currPlayer); // change player
 	}
 
 	if (resultCode == VALID_MOVE_CHECK)
 	{
-		std::cout << "Player " << int(this->getCurrPlayer()) + 1 << " won!" << std::endl;
-		exit(0);
+		
 	}
 
 	return resultCode;
@@ -398,8 +397,9 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 	int index = SRC_COL; //Change the col.
 	int change = 0; //check location.
 	int sideChange = 0; //used for diagonal moves.
-	
-	if (type == WHITE_ROOK || type == BLACK_ROOK || type == WHITE_QUEEN || type == BLACK_QUEEN)
+	bool isDiagonal = moveValidator::moveDiagonally(src + dst);
+
+	if (type == WHITE_ROOK || type == BLACK_ROOK || ((type == WHITE_QUEEN || type == BLACK_QUEEN) && !isDiagonal))
 	{
 		if (dst[SRC_COL] == src[SRC_COL]) // Check what is changing, col or row.
 		{
@@ -474,11 +474,14 @@ char Board::getPieceAt(char x, char y)
 	}
 }
 
-const char* Board::initialBoardString()
+char* Board::initialBoardString()
 {
-	char initBoard[66];
-	strcpy_s(initBoard, sizeof(initBoard), STARTING_BOARD);
-	char currPlayer = (char)('0' + this->getCurrPlayer());
-	strcat_s(initBoard, sizeof(initBoard), &currPlayer);
+	char* initBoard = new char[66];
+	for (int i = 0; i < 64; i++)
+	{
+		initBoard[i] = STARTING_BOARD[i];
+	}
+	initBoard[64] = (char)('0' + this->getCurrPlayer());
+	initBoard[65] = '\0';
 	return initBoard;
 }

@@ -13,7 +13,7 @@
 
 
 #define BOARD_SIZE 8
-#define STARTING_BOARD "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"
+#define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
 class Piece;
 class Rook;
@@ -50,6 +50,6 @@ public:
 	King* getKing(bool isBlack);
 	bool isBlockingPiece(std::string dst, std::string src, char type);
 	char getPieceAt(char x, char y);
-	const char* initialBoardString();
+	char* initialBoardString();
 };
 

@@ -12,7 +12,7 @@
 
 
 #define BOARD_SIZE 8
-#define STARTING_BOARD "RNBKQBNR################################################rnbkqbnr"
+#define STARTING_BOARD "RNBQKBNR################################################rnbqkbnr"
 
 class Piece;
 class Rook;

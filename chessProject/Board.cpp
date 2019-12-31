@@ -166,7 +166,7 @@ bool Board::isKingAttacked(King* king)
 		src = p->getCurrLocation();
 
 		/*Checking if piece p can eat the king.*/
-		if ((p->pieceType() != king->pieceType()) && (p->isBlack() != isBlack) && (p->isMoveValidPiece(src + dst)) && (!this->isBlockingPiece(dst, src, p->pieceType())))
+		if ((p->isAlive()) && (p->pieceType() != king->pieceType()) && (p->isBlack() != isBlack) && (p->isMoveValidPiece(src + dst)) && (!this->isBlockingPiece(dst, src, p->pieceType())))
 		{
 			return true;
 		}
@@ -352,6 +352,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 {
 	int index = SRC_COL; //Change the col.
 	int change = 0; //check location.
+	int sideChange = 0; //used for diagonal moves.
 	
 	if (type == WHITE_ROOK || type == BLACK_ROOK)
 	{
@@ -378,21 +379,22 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 
 	if (type == BLACK_BISHOP || type == WHITE_BISHOP)
 	{
-		std::string currLocation = src[SRC_ROW] < dst[SRC_ROW] ? src : dst;
-		std::string maxLocation = src[SRC_ROW] > dst[SRC_ROW] ? src : dst;
-		
+
+
 		// If the src is on the right of the dst, then the loop checks from src (right) to dst (left). If not then from left to right.
-		int addBy = src[SRC_COL] < dst[SRC_COL] ? 1 : -1; 
+
 
 		/*Going over all the cells betweeen the src cell and the dst cell (bishop move).*/
-		while (currLocation[SRC_ROW] != maxLocation[SRC_ROW] - 1)
+		while (dst[SRC_ROW] != src[SRC_ROW])
 		{
+			change = src[SRC_COL] > dst[SRC_COL] ? -1 : 1;
+			sideChange = src[SRC_ROW] > dst[SRC_ROW] ? -1 : 1;
 			/*Moving to the next cell.*/
-			currLocation[SRC_COL] += addBy;
-			currLocation[SRC_ROW]++;
+			src[SRC_COL] += change;
+			src[SRC_ROW]+= sideChange;
 
 			/*Checking if there's a piece in current location.*/
-			if (getPieceAt(currLocation[SRC_ROW], currLocation[SRC_COL]) != EMPTY_CELL) // fix here!
+			if (src != dst && getPieceAt(src[SRC_ROW], src[SRC_COL]) != EMPTY_CELL)
 			{
 				return true;
 			}

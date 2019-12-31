@@ -7,12 +7,13 @@
 #include "Bishop.h"
 #include "Queen.h"
 #include "Knight.h"
+#include "Pawn.h"
 
 //Original board "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
 
 #define BOARD_SIZE 8
-#define STARTING_BOARD "RNBQKBNR################################################rnbqkbnr"
+#define STARTING_BOARD "RNBQKBNRPPPPPPPP################################pppppppprnbqkbnr"
 
 class Piece;
 class Rook;
@@ -45,9 +46,10 @@ public:
 	void addPiece(Piece* piece);
 	bool removePiece(std::string location);
 	Piece* getPiece(std::string location);
-	unsigned int makeMove(std::string move);
+	CODES makeMove(std::string move);
 	King* getKing(bool isBlack);
 	bool isBlockingPiece(std::string dst, std::string src, char type);
 	char getPieceAt(char x, char y);
+	const char* initialBoardString();
 };
 

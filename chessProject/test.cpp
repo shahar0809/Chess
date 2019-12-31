@@ -5,21 +5,21 @@
 int main(void)
 {
 	Board board = Board();
-	/*board.printBoard();
-	board.setCurrPlayer(1);
-	board.makeMove("h8h1");
-	board.printBoard();
-
-	board.makeMove("f1h3");
-	board.printBoard();
-
-	board.makeMove("b8c6");
-	board.printBoard();*/
 
 	std::string move = "";
 	while (true)
 	{
 		board.printBoard();
+
+		if (board.getCurrPlayer())
+		{
+			std::cout << "Player 2's turn (BLACK)" << std::endl;
+		}
+		else
+		{
+			std::cout << "Player 1's turn (WHITE)" << std::endl;
+		}
+		
 		std::cin >> move;
 		board.makeMove(move);
 	}

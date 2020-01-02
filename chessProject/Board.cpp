@@ -164,7 +164,7 @@ Piece* Board::getPiece(std::string location)
 	return target;
 }
 
-bool Board::isKingAttacked(King* king)
+Piece* Board::isKingAttacked(King* king)
 {
 	bool isBlack = king->isBlack();
 	std::string dst = king->getCurrLocation();
@@ -179,10 +179,10 @@ bool Board::isKingAttacked(King* king)
 		/*Checking if piece p can eat the king.*/
 		if ((p->isAlive()) && (p->pieceType() != king->pieceType()) && (p->isBlack() != isBlack) && (p->isMoveValidPiece(src + dst)) && (!this->isBlockingPiece(dst, src, p->pieceType())))
 		{
-			return true;
+			return p;
 		}
 	}
-	return false;
+	return nullptr;
 }
 
 /*
@@ -339,6 +339,7 @@ CODES Board::makeMove(std::string move)
 	Piece* srcPiece = this->getPiece(src);
 	Piece* dstPiece = this->getPiece(dst);
 	CODES resultCode = this->isMoveValid(move);
+	King* otherKing = nullptr;
 	std::cout << "\n" << "RESULT CODE: " << resultCode << "\n";
 
 	// Making the move only if the move is valid.
@@ -355,13 +356,15 @@ CODES Board::makeMove(std::string move)
 		{
 			((Pawn*)(srcPiece))->setIsFirstMove(false);
 		}
-		setCurrPlayer(!this->_currPlayer); // change player
-	}
-
-	if (resultCode == VALID_MOVE_CHECK)
-	{
 		
 	}
+	if (resultCode == VALID_MOVE_CHECK)
+	{
+		otherKing = this->getKing(!this->getCurrPlayer());
+		resultCode = checkmate::isCheckmate(*this, otherKing, this->isKingAttacked(otherKing));
+	}
+
+	setCurrPlayer(!this->_currPlayer); // change player
 
 	return resultCode;
 }

@@ -3,9 +3,10 @@
 #include "Board.h"
 
 class board;
-
+#define COL 0
+#define ROW 1
 class checkmate {
 
 public:
-	bool isCheckmate(Board& board);
+	static CODES isCheckmate(Board& board, King* otherKing, Piece* attackers);
 };

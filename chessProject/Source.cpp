@@ -6,6 +6,7 @@ in order to read and write information from and to the Backend
 
 #include "Pipe.h"
 #include "Board.h"
+
 #include <iostream>
 #include <thread>
 
@@ -19,6 +20,7 @@ void main()
 	srand(time_t(NULL));
 	char* message = nullptr;
 	Pipe p;
+	King* otherKing = nullptr;
 	Board board = Board();
 	bool isConnect = p.connect();
 	
@@ -60,15 +62,17 @@ void main()
 		// should handle the string the sent from graphics
 		// according the protocol. Ex: e2e4           (move e2 to e4)
 		
-		const char resultCode = ((char)(board.makeMove(msgFromGraphics) + '0'));
+		char resultCode = ((char)(board.makeMove(msgFromGraphics) + '0'));
 		// YOUR CODE
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 		msgToGraphics[1] = '\0';
 		// return result to graphics		
 		p.sendMessageToGraphics(msgToGraphics);   
-
+		
 		// get message from graphics
 		msgFromGraphics = p.getMessageFromGraphics();
+		
+		
 	}
 
 	p.close();

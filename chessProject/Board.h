@@ -8,6 +8,7 @@
 #include "Queen.h"
 #include "Knight.h"
 #include "Pawn.h"
+#include "checkmate.h"
 
 //Original board "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
@@ -18,6 +19,7 @@
 class Piece;
 class Rook;
 class King;
+class checkmate;
 
 class Board
 {
@@ -39,7 +41,7 @@ public:
 	unsigned int getCurrPlayer();
 	CODES isMoveValid(std::string move);
 	
-	bool isKingAttacked(King* king);
+	Piece* isKingAttacked(King* king);
 	unsigned int getNumOfPieces();
 	std::vector<Piece*> getPieces();
 	void printBoard();

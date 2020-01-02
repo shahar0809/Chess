@@ -247,6 +247,10 @@ CODES Board::isMoveValid(std::string move)
 	{
 		return INVALID_PIECE_MOVE;
 	}
+	if ((srcPiece->pieceType() == BLACK_PAWN || srcPiece->pieceType() == WHITE_PAWN) && moveValidator::moveDiagonally(move) && !this->getPiece(dst))                            
+	{
+		return INVALID_PIECE_MOVE;
+	}
 
 	/*0,1,4 - Checking checks.*/
 	this->removePiece(dst);
@@ -356,15 +360,17 @@ CODES Board::makeMove(std::string move)
 		{
 			((Pawn*)(srcPiece))->setIsFirstMove(false);
 		}
+		if (resultCode == VALID_MOVE_CHECK)
+		{
+			otherKing = this->getKing(!this->getCurrPlayer());
+			resultCode = checkmate::isCheckmate(*this, otherKing, this->isKingAttacked(otherKing));
+		}
+		setCurrPlayer(!this->_currPlayer); // change player
 		
 	}
-	if (resultCode == VALID_MOVE_CHECK)
-	{
-		otherKing = this->getKing(!this->getCurrPlayer());
-		resultCode = checkmate::isCheckmate(*this, otherKing, this->isKingAttacked(otherKing));
-	}
+	
 
-	setCurrPlayer(!this->_currPlayer); // change player
+	
 
 	return resultCode;
 }

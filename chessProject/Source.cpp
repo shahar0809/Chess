@@ -63,14 +63,29 @@ void main()
 		// according the protocol. Ex: e2e4           (move e2 to e4)
 		
 		char resultCode = ((char)(board.makeMove(msgFromGraphics) + '0'));
+		
 		// YOUR CODE
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 		msgToGraphics[1] = '\0';
 		// return result to graphics		
-		p.sendMessageToGraphics(msgToGraphics);   
-		
-		// get message from graphics
-		msgFromGraphics = p.getMessageFromGraphics();
+		if (resultCode == '8') //check mate DOSENT WORK!!!!!!!!!!!!!
+		{
+			resultCode = '1';
+			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
+			msgToGraphics[1] = '\0';
+			p.sendMessageToGraphics(msgToGraphics);
+			system("PAUSE");
+			p.close();
+			exit(0);
+		}
+		else
+		{
+			p.sendMessageToGraphics(msgToGraphics);
+
+			// get message from graphics
+			msgFromGraphics = p.getMessageFromGraphics();
+
+		}
 		
 		
 	}

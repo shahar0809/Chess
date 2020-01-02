@@ -23,17 +23,24 @@ char Pawn::pieceType()
 
 bool Pawn::isMoveValidPiece(std::string move)
 {
+	int deltaY = 0;
+	int deltaX = 0;
+	int isBlackP = 0;
+
+
+	isBlackP = this->isBlack();
+	isBlackP = isBlackP ? -1 : 1;
+	deltaY = move[DEST_ROW] - move[SRC_ROW];
+	deltaX = move[DEST_COL] - move[SRC_COL];
+
 	if (this->_isFirstMove)
 	{
-		return ((move[SRC_COL] == move[DEST_COL] && abs(move[SRC_ROW] - move[DEST_ROW]) == 1) ||
-			(abs(move[SRC_ROW] - move[DEST_ROW]) == 2) ||
-			(abs(move[SRC_COL] - move[DEST_COL]) == 1 && abs(move[SRC_ROW] - move[DEST_ROW]) == 1));
+		return (!deltaX && (deltaY == 1*isBlackP || deltaY == 2*isBlackP)) || (deltaY == 1 * isBlackP && abs(deltaX) == 1);
 	}
 	else
 	{
 		/*If it's a normal move (forword / backwards) or if it's an eating move (diagnolly)*/
-		return ((move[SRC_COL] == move[DEST_COL] && abs(move[SRC_ROW] - move[DEST_ROW]) == 1) ||
-			(abs(move[SRC_COL] - move[DEST_COL]) == 1 && abs(move[SRC_ROW] - move[DEST_ROW]) == 1));
+		return (!deltaX && deltaY == 1 * isBlackP) || (deltaY == 1 * isBlackP && abs(deltaX) == 1);
 	}
 }
 

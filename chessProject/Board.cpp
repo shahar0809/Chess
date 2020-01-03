@@ -232,22 +232,14 @@ CODES Board::isMoveValid(std::string move)
 		return SRC_IS_DST;
 	}
 
-	/*If the src piece is a pawn.*/
-	if (srcPiece->pieceType() == WHITE_PAWN || srcPiece->pieceType() == BLACK_PAWN)
-	{
-		/*If the pawn can't eat the dst piece.*/
-		if (moveValidator::moveDiagonally(move) && !dstPiece )
-		{
-			return INVALID_PIECE_MOVE;
-		}
-	}
+	
 
 	/*6 - check if the move is valid for the piece and it is not blocked by other piece*/
 	if (!srcPiece->isMoveValidPiece(move) || this->isBlockingPiece(dst, src, srcPiece->pieceType()))
 	{
 		return INVALID_PIECE_MOVE;
 	}
-	if ((srcPiece->pieceType() == BLACK_PAWN || srcPiece->pieceType() == WHITE_PAWN) && moveValidator::moveDiagonally(move) && !this->getPiece(dst))                            
+	if ((srcPiece->pieceType() == BLACK_PAWN || srcPiece->pieceType() == WHITE_PAWN) && moveValidator::moveDiagonally(move) && !dstPiece)                            
 	{
 		return INVALID_PIECE_MOVE;
 	}

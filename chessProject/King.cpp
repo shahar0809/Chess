@@ -10,6 +10,7 @@ King::~King()
 
 bool King::isMoveValidPiece(std::string move)
 {
+	// The king moves a single step only.
 	return moveValidator::singleMove(move);
 }
 

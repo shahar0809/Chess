@@ -14,7 +14,6 @@ using std::cout;
 using std::endl;
 using std::string;
 
-
 void main()
 {
 	srand(time_t(NULL));
@@ -23,8 +22,9 @@ void main()
 	King* otherKing = nullptr;
 	Board board = Board();
 	bool isConnect = p.connect();
-	
 	string ans;
+
+	/*If unable to connect to the front end.*/
 	while (!isConnect)
 	{
 		cout << "cant connect to graphics" << endl;
@@ -44,34 +44,31 @@ void main()
 		}
 	}
 	
-	
-	char msgToGraphics[1024];
 	// msgToGraphics should contain the board string accord the protocol
-	// YOUR CODE
-
-	message = board.initialBoardString();
-	strcpy_s(msgToGraphics, message); // just example...
+	char msgToGraphics[1024];
 	
-	p.sendMessageToGraphics(msgToGraphics);   // send the board string
+	message = board.initialBoardString();
+	strcpy_s(msgToGraphics, message); 
+	
+	p.sendMessageToGraphics(msgToGraphics);   // sending the board string.
 	delete message;
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 
 	while (msgFromGraphics != "quit")
 	{
-		// should handle the string the sent from graphics
-		// according the protocol. Ex: e2e4           (move e2 to e4)
+		// should handle the string the sent from graphics.
+		char resultCode = board.makeMove(msgFromGraphics);
 		
-		char resultCode = ((char)(board.makeMove(msgFromGraphics) + '0'));
-		
-		// YOUR CODE
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 		msgToGraphics[1] = '\0';
-		// return result to graphics		
-		if (resultCode == '8') //check mate DOSENT WORK!!!!!!!!!!!!!
+
+		// return result to graphics	
+		/*Ending the game if there's a checkmate.*/
+		if (resultCode == CHECKMATE_MOTHER_F$$KER) //check mate DOSENT WORK!!!!!!!!!!!!!
 		{
-			resultCode = '1';
-			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
+			resultCode = VALID_MOVE_CHECK;
+			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation.
 			msgToGraphics[1] = '\0';
 			p.sendMessageToGraphics(msgToGraphics);
 			system("PAUSE");
@@ -84,10 +81,7 @@ void main()
 
 			// get message from graphics
 			msgFromGraphics = p.getMessageFromGraphics();
-
 		}
-		
-		
 	}
 
 	p.close();

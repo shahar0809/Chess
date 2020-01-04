@@ -62,26 +62,11 @@ void main()
 		
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 		msgToGraphics[1] = '\0';
-
 		// return result to graphics	
-		/*Ending the game if there's a checkmate.*/
-		if (resultCode == CHECKMATE_MOTHER_F$$KER) //check mate DOSENT WORK!!!!!!!!!!!!!
-		{
-			resultCode = VALID_MOVE_CHECK;
-			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation.
-			msgToGraphics[1] = '\0';
-			p.sendMessageToGraphics(msgToGraphics);
-			system("PAUSE");
-			p.close();
-			exit(0);
-		}
-		else
-		{
-			p.sendMessageToGraphics(msgToGraphics);
+		p.sendMessageToGraphics(msgToGraphics);
 
-			// get message from graphics
-			msgFromGraphics = p.getMessageFromGraphics();
-		}
+		// get message from graphics
+		msgFromGraphics = p.getMessageFromGraphics();
 	}
 
 	p.close();

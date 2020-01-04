@@ -30,13 +30,8 @@ CODES checkmate::isCheckmate(Board& board, King* otherKing, Piece* attacker)
 			canAttackerBeEated = true;
 		}
 	}
-	board.setCurrPlayer(!board.getCurrPlayer()); // Return the turn to the player.
-	bool res = pieceBetween(attackerLocation, kingLocation, board);
-	if (!isEscapingPath && !canAttackerBeEated && !res);
-	{
-		return CHECKMATE_MOTHER_F$$KER;
-	}
-	return VALID_MOVE_CHECK;
+
+	return !isEscapingPath && !canAttackerBeEated && !pieceBetween(attackerLocation, kingLocation, board) ? CHECKMATE_MOTHER_F$$KER : VALID_MOVE_CHECK;
 }
 
 /*

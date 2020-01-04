@@ -323,7 +323,7 @@ namespace chessGraphics
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-   
+ 
 
             enginePipe.sendEngineMove("quit");
             enginePipe.close();

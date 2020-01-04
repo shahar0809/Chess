@@ -136,7 +136,7 @@ Output: None.
 */
 void Board::setBoard(char x, char y, char piece)
 {
-	this->_board[(int)(x - MIN_INDEX_ROW)][(int)(y - MIN_INDEX_COL)] = piece;
+	this->_board[(int)(BOARD_SIZE - (x - MIN_INDEX_ROW)) - 1][(int)(y - MIN_INDEX_COL)] = piece;
 }
 
 /*
@@ -374,6 +374,7 @@ CODES Board::makeMove(std::string move)
 		{
 			otherKing = this->getKing(!this->getCurrPlayer());
 			resultCode = checkmate::isCheckmate(*this, otherKing, this->isKingAttacked(otherKing));
+			setCurrPlayer(!this->_currPlayer); // changing player.
 		}
 		setCurrPlayer(!this->_currPlayer); // changing player.
 	}
@@ -456,14 +457,14 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 	if (type == WHITE_PAWN || type == BLACK_PAWN)
 	{
 		/*Pawn eating move.*/
-		if (abs(src[SRC_ROW] - dst[SRC_ROW]) == abs(src[SRC_COL] - dst[SRC_COL]) == 1) // A single move forwards.
+		if (abs(src[SRC_ROW] - dst[SRC_ROW]) == abs(src[SRC_COL] - dst[SRC_COL]) == 1) // A single move diagonally.
 		{
 			return false;
 		}
 		/*Normal move.*/
 		else
 		{
-			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL); // A single move diagonally.
+			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL); // A single move forwards.
 		}
 	}
 	
@@ -480,7 +481,7 @@ char Board::getPieceAt(char x, char y)
 {
 	if (x >= MIN_INDEX_ROW && x <= MAX_INDEX_ROW && y >= MIN_INDEX_COL && y <= MAX_INDEX_COL)
 	{
-		return this->_board[x - MIN_INDEX_ROW][y - MIN_INDEX_COL];
+		return this->_board[(int)(BOARD_SIZE - (x - MIN_INDEX_ROW)) - 1][(int)(y - MIN_INDEX_COL)];
 	}
 	/*Invalid Indices.*/
 	else

@@ -7,6 +7,10 @@ Output: If there is a checkmate - checkmate code / else - check code (CODES enum
 */
 CODES checkmate::isCheckmate(Board& board, King* otherKing, Piece* attacker)
 {
+	if (!attacker)
+	{
+		return VALID_MOVE_CHECK;
+	}
 	std::string kingLocation = otherKing->getCurrLocation(), attackerLocation = attacker->getCurrLocation(), squareBetween = kingLocation, move = "";
 	bool isEscapingPath = false, canAttackerBeEated = false;
 	

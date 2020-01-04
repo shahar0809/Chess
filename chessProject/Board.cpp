@@ -12,7 +12,7 @@ Board::Board()
 			this->_board[i] += STARTING_BOARD[i * BOARD_SIZE + j];
 		}
 	}
-	
+
 	/*Initializing board with the starting board.*/
 	/*Adding the 4 rooks.*/
 	p = new Rook("a8", true);
@@ -43,7 +43,7 @@ Board::Board()
 	this->_pieces.push_back(p);
 	p = new Bishop("f1", false);
 	this->_pieces.push_back(p);
-	
+
 	/*Adding the 4 knights.*/
 	p = new Knight("g8", true);
 	this->_pieces.push_back(p);
@@ -176,7 +176,7 @@ Piece* Board::isKingAttacked(King* king)
 	Piece* p = nullptr;
 	std::string src = "";
 
-	for (int i = 0; i< this->_pieces.size(); i++)
+	for (int i = 0; i < this->_pieces.size(); i++)
 	{
 		p = this->_pieces[i];
 		src = p->getCurrLocation();
@@ -244,7 +244,7 @@ CODES Board::isMoveValid(std::string move)
 	if (srcPiece->pieceType() == WHITE_PAWN || srcPiece->pieceType() == BLACK_PAWN)
 	{
 		/*If the pawn can't eat the dst piece.*/
-		if (moveValidator::moveDiagonally(move) && !dstPiece )
+		if (moveValidator::moveDiagonally(move) && !dstPiece)
 		{
 			return INVALID_PIECE_MOVE;
 		}
@@ -255,7 +255,7 @@ CODES Board::isMoveValid(std::string move)
 	{
 		return INVALID_PIECE_MOVE;
 	}
-	if ((srcPiece->pieceType() == BLACK_PAWN || srcPiece->pieceType() == WHITE_PAWN) && moveValidator::moveDiagonally(move) && !this->getPiece(dst))                            
+	if ((srcPiece->pieceType() == BLACK_PAWN || srcPiece->pieceType() == WHITE_PAWN) && moveValidator::moveDiagonally(move) && !this->getPiece(dst))
 	{
 		return INVALID_PIECE_MOVE;
 	}
@@ -426,7 +426,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 		while (dst != src)
 		{
 			src[index] += change;
-			if (this->getPiece(src) &&  src != dst)
+			if (this->getPiece(src) && src != dst)
 			{
 				return true;
 			}
@@ -443,7 +443,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 			sideChange = src[SRC_ROW] > dst[SRC_ROW] ? -1 : 1;
 			/*Moving to the next cell.*/
 			src[SRC_COL] += change;
-			src[SRC_ROW]+= sideChange;
+			src[SRC_ROW] += sideChange;
 
 			/*Checking if there's a piece in current location.*/
 			if (src != dst && getPieceAt(src[SRC_ROW], src[SRC_COL]) != EMPTY_CELL)
@@ -467,7 +467,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL); // A single move forwards.
 		}
 	}
-	
+
 	/*No piece can block a KING and a KNIGHT.*/
 	return false;
 }

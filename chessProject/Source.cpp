@@ -1,6 +1,6 @@
 /*
 This file servers as an example of how to use Pipe.h file.
-It is recommended to use the following code in your project, 
+It is recommended to use the following code in your project,
 in order to read and write information from and to the Backend
 */
 
@@ -14,6 +14,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
+
 void main()
 {
 	srand(time_t(NULL));
@@ -22,9 +23,8 @@ void main()
 	King* otherKing = nullptr;
 	Board board = Board();
 	bool isConnect = p.connect();
-	string ans;
 
-	/*If unable to connect to the front end.*/
+	string ans;
 	while (!isConnect)
 	{
 		cout << "cant connect to graphics" << endl;
@@ -37,36 +37,60 @@ void main()
 			Sleep(5000);
 			isConnect = p.connect();
 		}
-		else 
+		else
 		{
 			p.close();
 			return;
 		}
 	}
-	
-	// msgToGraphics should contain the board string accord the protocol
+
+
 	char msgToGraphics[1024];
-	
+	// msgToGraphics should contain the board string accord the protocol
+	// YOUR CODE
+
 	message = board.initialBoardString();
-	strcpy_s(msgToGraphics, message); 
-	
-	p.sendMessageToGraphics(msgToGraphics);   // sending the board string.
+	strcpy_s(msgToGraphics, message); // just example...
+
+	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 	delete message;
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 
 	while (msgFromGraphics != "quit")
 	{
-		// should handle the string the sent from graphics.
-		char resultCode = board.makeMove(msgFromGraphics);
-		
+		// should handle the string the sent from graphics
+		// according the protocol. Ex: e2e4           (move e2 to e4)
+
+		char resultCode =board.makeMove(msgFromGraphics);
+
+		// YOUR CODE
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 		msgToGraphics[1] = '\0';
-		// return result to graphics	
-		p.sendMessageToGraphics(msgToGraphics);
+		// return result to graphics		
+		if (resultCode == CHECKMATE_MOTHER_F$$KER) //check mate DOSENT WORK!!!!!!!!!!!!!
+		{
+			resultCode = VALID_MOVE_CHECK;
+			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
+			msgToGraphics[1] = '\0';
+			p.sendMessageToGraphics(msgToGraphics);
+			msgFromGraphics = p.getMessageFromGraphics();
 
-		// get message from graphics
-		msgFromGraphics = p.getMessageFromGraphics();
+			resultCode = CHECKMATE_MOTHER_F$$KER;
+			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
+			msgToGraphics[1] = '\0';
+			p.sendMessageToGraphics(msgToGraphics);
+			system("PAUSE");
+			p.close();
+			exit(0);
+		}
+		else
+		{
+			p.sendMessageToGraphics(msgToGraphics);
+
+			// get message from graphics
+			msgFromGraphics = p.getMessageFromGraphics();
+		}
 	}
 
 	p.close();

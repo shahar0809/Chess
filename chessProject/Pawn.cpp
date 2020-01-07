@@ -9,6 +9,7 @@ Pawn::~Pawn()
 {
 }
 
+// Returning the symbol of the Pawn.
 char Pawn::pieceType()
 {
 	if (this->isBlack())
@@ -21,21 +22,20 @@ char Pawn::pieceType()
 	}
 }
 
+/*
+Checks if the move is valid for a Pawn.
+Input: The move (string).
+Output: Whether the move is valid or not.
+*/
 bool Pawn::isMoveValidPiece(std::string move)
 {
-	int deltaY = 0;
-	int deltaX = 0;
-	int isBlackP = 0;
+	int deltaY = move[DEST_ROW] - move[SRC_ROW], deltaX = move[DEST_COL] - move[SRC_COL],
+		isBlackP = this->isBlack() ? -1 : 1;
 
-
-	isBlackP = this->isBlack();
-	isBlackP = isBlackP ? -1 : 1;
-	deltaY = move[DEST_ROW] - move[SRC_ROW];
-	deltaX = move[DEST_COL] - move[SRC_COL];
-
+	/*Allowing two steps forwards if it's the pawn first move.*/
 	if (this->_isFirstMove)
 	{
-		return (!deltaX && (deltaY == 1*isBlackP || deltaY == 2*isBlackP)) || (deltaY == 1 * isBlackP && abs(deltaX) == 1);
+		return (!deltaX && (deltaY == 1 * isBlackP || deltaY == 2 * isBlackP)) || (deltaY == 1 * isBlackP && abs(deltaX) == 1);
 	}
 	else
 	{

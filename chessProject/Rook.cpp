@@ -8,7 +8,6 @@ Rook::Rook(std::string location, bool isBlack) : Piece(location, isBlack)
 // d'tor
 Rook::~Rook()
 {
-
 }
 
 /*
@@ -21,6 +20,7 @@ bool Rook::isMoveValidPiece(std::string move)
 	int stepsSideways = moveValidator::moveSideways(move);
 	int stepsForwardOrBackward = moveValidator::moveBackOrForward(move);
 	
+	/*If the move is sideways or forwards / backwards (but not both), then it's valid.*/
 	if ((!stepsSideways && stepsForwardOrBackward) || (stepsSideways && !stepsForwardOrBackward))
 	{
 		return true;

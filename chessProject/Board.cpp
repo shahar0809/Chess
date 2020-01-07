@@ -150,9 +150,9 @@ Piece* Board::getPiece(std::string location)
 	int len = 0;
 	bool isTargetFound = false;
 
-
 	len = this->_pieces.size();
 
+	/*Searching for the piece in the pieces vector.*/
 	for (int i = 0; (i < len) && !isTargetFound; i++)
 	{
 		if (this->_pieces[i]->getCurrLocation() == location && this->_pieces[i]->isAlive())
@@ -164,6 +164,11 @@ Piece* Board::getPiece(std::string location)
 	return target;
 }
 
+/*
+The method checks if the king inputted is attacked by a piece of the other player (check).
+Input: The king (a King object).
+Output: Returns the attacker of the king (a Piece pointer).
+*/
 Piece* Board::isKingAttacked(King* king)
 {
 	bool isBlack = king->isBlack();
@@ -176,8 +181,12 @@ Piece* Board::isKingAttacked(King* king)
 		p = this->_pieces[i];
 		src = p->getCurrLocation();
 
-		/*Checking if piece p can eat the king.*/
-		if ((p->isAlive()) && (p->pieceType() != king->pieceType()) && (p->isBlack() != isBlack) && (p->isMoveValidPiece(src + dst)) && (!this->isBlockingPiece(dst, src, p->pieceType())))
+		/*Checking if piece 'p' can eat the king.*/
+		if ((p->isAlive()) &&                                                    // If the piece is alive.
+			(p->pieceType() != king->pieceType()) &&                             // if the piece is not a king.
+			(p->isBlack() != isBlack) &&										 // If the piece is of the other player.
+			(p->isMoveValidPiece(src + dst)) &&	                                 // If the piece can eat the king.
+			(!this->isBlockingPiece(dst, src, p->pieceType())))					 // If there isn't any piece blocking the piece from eating the king.
 		{
 			return p;
 		}
@@ -188,7 +197,7 @@ Piece* Board::isKingAttacked(King* king)
 /*
 This function checks if the move inputted is valid or not.
 Input: The move (string), the board (reference to Board object).
-Output: The code matching to the move.
+Output: The code matching to the move (CODES enum).
 */
 CODES Board::isMoveValid(std::string move)
 {
@@ -207,7 +216,6 @@ CODES Board::isMoveValid(std::string move)
 	{
 		return NO_PIECE_IN_SRC;
 	}
-	
 	if (srcPiece->isBlack() != this->getCurrPlayer())
 	{
 		return NO_PIECE_IN_SRC;
@@ -232,7 +240,16 @@ CODES Board::isMoveValid(std::string move)
 		return SRC_IS_DST;
 	}
 
-	
+	/*Specific checking for Pawn (in case of eating move).*/
+	if (srcPiece->pieceType() == WHITE_PAWN || srcPiece->pieceType() == BLACK_PAWN)
+	{
+		/*If the pawn can't eat the dst piece.*/
+		if (moveValidator::moveDiagonally(move) && !dstPiece )
+		{
+			return INVALID_PIECE_MOVE;
+		}
+	}
+
 
 	/*6 - check if the move is valid for the piece and it is not blocked by other piece*/
 	if (!srcPiece->isMoveValidPiece(move) || this->isBlockingPiece(dst, src, srcPiece->pieceType()))
@@ -245,6 +262,7 @@ CODES Board::isMoveValid(std::string move)
 	}
 
 	/*0,1,4 - Checking checks.*/
+	/*Making the move.*/
 	this->removePiece(dst);
 	srcPiece->setLocation(dst);
 	this->setBoard(dst[SRC_ROW], dst[SRC_COL], srcPiece->pieceType());
@@ -252,7 +270,7 @@ CODES Board::isMoveValid(std::string move)
 
 	if (currKing && this->isKingAttacked(currKing))
 	{
-		/*Undoing the move*/
+		/*Undoing the move if a self check was made.*/
 		if (dstPiece)
 		{
 			this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
@@ -271,7 +289,7 @@ CODES Board::isMoveValid(std::string move)
 	// Checking if a check is made by making the move.
 	if (otherKing && this->isKingAttacked(otherKing))
 	{
-		/*Undoing the move*/
+		/*Undoing the move if a check was made on the other king.*/
 		if (dstPiece)
 		{
 			this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
@@ -287,7 +305,7 @@ CODES Board::isMoveValid(std::string move)
 		return VALID_MOVE_CHECK;
 	}
 
-	/*Undoing the move*/
+	/*Undoing the move.*/
 	if (dstPiece)
 	{
 		this->setBoard(dst[SRC_ROW], dst[SRC_COL], dstPiece->pieceType());
@@ -321,12 +339,11 @@ void Board::printBoard()
 	std::cout << "  a b c d e f g h" << std::endl << std::endl;
 }
 
-void Board::addPiece(Piece* piece)
-{
-	this->_pieces.push_back(piece);
-	this->setBoard(piece->getCurrLocation()[1], piece->getCurrLocation()[0], piece->pieceType());
-}
-
+/*
+This method makes the move only if it's valid.
+Input: The move (string).
+Output: The result code of the move (CODES enum).
+*/
 CODES Board::makeMove(std::string move)
 {
 	/*Getting the pieces at the dest and src locations.*/
@@ -336,7 +353,9 @@ CODES Board::makeMove(std::string move)
 	Piece* dstPiece = this->getPiece(dst);
 	CODES resultCode = this->isMoveValid(move);
 	King* otherKing = nullptr;
-	std::cout << "\n" << "RESULT CODE: " << resultCode << "\n";
+
+	// printing code result.
+	std::cout << "\n" << "RESULT CODE: " << (char)resultCode << "\n";
 
 	// Making the move only if the move is valid.
 	if (resultCode == VALID_MOVE || resultCode == VALID_MOVE_CHECK)
@@ -357,12 +376,8 @@ CODES Board::makeMove(std::string move)
 			otherKing = this->getKing(!this->getCurrPlayer());
 			resultCode = checkmate::isCheckmate(*this, otherKing, this->isKingAttacked(otherKing));
 		}
-		setCurrPlayer(!this->_currPlayer); // change player
-		
+		setCurrPlayer(!this->_currPlayer); // changing player.
 	}
-	
-
-	
 
 	return resultCode;
 }
@@ -377,7 +392,7 @@ King* Board::getKing(bool isBlack)
 	// Getting the type of the king.
 	char typeOfKing = isBlack ? BLACK_KING : WHITE_KING;
 
-	// Returning the matching king.
+	// Returning the king according to the inputted player.
 	for (unsigned int i = 0; i < this->_pieces.size(); i++)
 	{
 		if (this->_pieces[i]->pieceType() == typeOfKing)
@@ -400,6 +415,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 	int sideChange = 0; //used for diagonal moves.
 	bool isDiagonal = moveValidator::moveDiagonally(src + dst);
 
+	/*Checking for a blocking piece when the src piece is a ROOK.*/
 	if (type == WHITE_ROOK || type == BLACK_ROOK || ((type == WHITE_QUEEN || type == BLACK_QUEEN) && !isDiagonal))
 	{
 		if (dst[SRC_COL] == src[SRC_COL]) // Check what is changing, col or row.
@@ -417,11 +433,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 		}
 	}
 
-	if (WHITE_KING == type || BLACK_KING == type || WHITE_KNIGHT == type || BLACK_KING == type)
-	{
-		return false;
-	}
-
+	/*Checking for a blocking piece when the src piece is a BISHOP.*/
 	if (type == BLACK_BISHOP || type == WHITE_BISHOP || type == WHITE_QUEEN || type == BLACK_QUEEN)
 	{
 		/*Going over all the cells betweeen the src cell and the dst cell (bishop move).*/
@@ -441,19 +453,22 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 		}
 	}
 
+	/*Checking for a blocking piece when the src piece is a PAWN.*/
 	if (type == WHITE_PAWN || type == BLACK_PAWN)
 	{
 		/*Pawn eating move.*/
-		if (abs(src[SRC_ROW] - dst[SRC_ROW]) == abs(src[SRC_COL] - dst[SRC_COL]) == 1)
+		if (abs(src[SRC_ROW] - dst[SRC_ROW]) == abs(src[SRC_COL] - dst[SRC_COL]) == 1) // A single move forwards.
 		{
 			return false;
 		}
 		/*Normal move.*/
 		else
 		{
-			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL);
+			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL); // A single move diagonally.
 		}
 	}
+	
+	/*No piece can block a KING and a KNIGHT.*/
 	return false;
 }
 
@@ -475,14 +490,22 @@ char Board::getPieceAt(char x, char y)
 	}
 }
 
+/*
+Creates the initial string to be sent to the front end.
+Input: None.
+Output: The inital string (a char pointer).
+*/
 char* Board::initialBoardString()
 {
-	char* initBoard = new char[66];
-	for (int i = 0; i < 64; i++)
+	char* initBoard = new char[BOARD_SIZE * BOARD_SIZE + 2];
+
+	/*Copying the starting board of the game into the first 64 chars of the string.*/
+	for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++)
 	{
 		initBoard[i] = STARTING_BOARD[i];
 	}
-	initBoard[64] = (char)('0' + this->getCurrPlayer());
-	initBoard[65] = '\0';
+
+	initBoard[BOARD_SIZE * BOARD_SIZE] = (char)('0' + this->getCurrPlayer()); // putting the starting player into the last char.
+	initBoard[BOARD_SIZE * BOARD_SIZE + 1] = '\0';
 	return initBoard;
 }

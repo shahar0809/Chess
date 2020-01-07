@@ -1,6 +1,5 @@
 #include "Piece.h"
 #include "King.h"
-class King;
 
 // c'tor
 Piece::Piece(std::string location, bool isBlack)
@@ -21,7 +20,11 @@ void Piece::setIsAlive(bool isAlive)
 	this->_isAlive = isAlive;
 }
 
-
+/*
+Sets the piece current location to the new location inputted.
+Input: new location (string).
+Output: None.
+*/
 void Piece::setLocation(std::string location)
 {
 	if (!(location[SRC_COL] < MIN_INDEX_COL || location[SRC_COL] > MAX_INDEX_COL || location[SRC_ROW] < MIN_INDEX_ROW || location[SRC_ROW] > MAX_INDEX_ROW))

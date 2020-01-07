@@ -1,6 +1,10 @@
 #pragma once
-#include "moveValidator.h"
 #include <vector>
+
+#include "moveValidator.h"
+
+
+class King;
 
 #define SRC_COL  0
 #define SRC_ROW 1
@@ -19,7 +23,7 @@
 
 enum CODES
 {
-	VALID_MOVE = 0,
+	VALID_MOVE = '0',
 	VALID_MOVE_CHECK,
 	NO_PIECE_IN_SRC,
 	PIECE_IN_DST,

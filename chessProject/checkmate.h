@@ -9,4 +9,5 @@ class checkmate {
 
 public:
 	static CODES isCheckmate(Board& board, King* otherKing, Piece* attackers);
+	static bool pieceBetween(std::string src, std::string dst, Board& board);
 };

@@ -1,6 +1,6 @@
 /*
 This file servers as an example of how to use Pipe.h file.
-It is recommended to use the following code in your project, 
+It is recommended to use the following code in your project,
 in order to read and write information from and to the Backend
 */
 
@@ -14,6 +14,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
+
 void main()
 {
 	srand(time_t(NULL));
@@ -21,10 +22,14 @@ void main()
 	Pipe p;
 	King* otherKing = nullptr;
 	Board board = Board();
-	bool isConnect = p.connect();
+	bool isConnect = false;
 	string ans;
 
-	/*If unable to connect to the front end.*/
+	system("start chessGraphics.exe");
+	Sleep(MODERATE_SLEEP);
+	isConnect = p.connect();
+
+	
 	while (!isConnect)
 	{
 		cout << "cant connect to graphics" << endl;
@@ -34,41 +39,51 @@ void main()
 		if (ans == "0")
 		{
 			cout << "trying connect again.." << endl;
-			Sleep(5000);
+			Sleep(MODERATE_SLEEP);
 			isConnect = p.connect();
 		}
-		else 
+		else
 		{
 			p.close();
 			return;
 		}
 	}
-	
+
+
+	char msgToGraphics[BUFFER_SIZE];
 	// msgToGraphics should contain the board string accord the protocol
-	char msgToGraphics[1024];
+	// YOUR CODE
 	
 	message = board.initialBoardString();
-	strcpy_s(msgToGraphics, message); 
-	
-	p.sendMessageToGraphics(msgToGraphics);   // sending the board string.
+	strcpy_s(msgToGraphics, message); // just example...
+
+	p.sendMessageToGraphics(msgToGraphics);   // send the board string
 	delete message;
 	// get message from graphics
 	string msgFromGraphics = p.getMessageFromGraphics();
 
 	while (msgFromGraphics != "quit")
 	{
-		// should handle the string the sent from graphics.
-		char resultCode = board.makeMove(msgFromGraphics);
-		
+		// should handle the string the sent from graphics
+		// according the protocol. Ex: e2e4           (move e2 to e4)
+
+		char resultCode =board.makeMove(msgFromGraphics);
+
+		// YOUR CODE
 		strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 		msgToGraphics[1] = '\0';
-
-		// return result to graphics	
-		/*Ending the game if there's a checkmate.*/
-		if (resultCode == CHECKMATE_MOTHER_F$$KER) //check mate DOSENT WORK!!!!!!!!!!!!!
+		// return result to graphics		
+		if (resultCode == CHECKMATE_MOTHER_F$$KER) //check mate DOSENT WORK!!!!!!!!!!!!! We fix the problem of the front end.
 		{
 			resultCode = VALID_MOVE_CHECK;
-			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation.
+			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
+			msgToGraphics[1] = '\0';
+			p.sendMessageToGraphics(msgToGraphics);
+			board.printBoard();
+			msgFromGraphics = p.getMessageFromGraphics();
+
+			resultCode = CHECKMATE_MOTHER_F$$KER;
+			strcpy_s(msgToGraphics, &resultCode); // msgToGraphics should contain the result of the operation
 			msgToGraphics[1] = '\0';
 			p.sendMessageToGraphics(msgToGraphics);
 			std::cout << "CHECKMATE\n";
@@ -77,11 +92,12 @@ void main()
 		else
 		{
 			p.sendMessageToGraphics(msgToGraphics);
+			board.printBoard();
 
 			// get message from graphics
 			msgFromGraphics = p.getMessageFromGraphics();
 		}
 	}
-
+	
 	p.close();
 }

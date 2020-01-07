@@ -45,6 +45,7 @@
 using namespace std;
 
 #define BUFFER_SIZE		1024 // 1K
+#define MODERATE_SLEEP  4500 
 
 class Pipe
 {
@@ -116,8 +117,8 @@ public:
 			return false;
 		}
 
-		_tprintf(_T("Sends %ld bytes; Message: \"%s\"\n"),
-			cbBytesWritten, chRequest);
+		_tprintf(_T("Sends %ld bytes\n"),
+			cbBytesWritten);
 
 		return true;
 
@@ -144,8 +145,8 @@ public:
 			return "";
 		}
 
-		_tprintf(_T("Receives %ld bytes; Message: \"%s\"\n"),
-			cbBytesRead, chReply);
+		_tprintf(_T("Receives %ld byte\n"),
+			cbBytesRead);
 
 		for (int i = 0; i < 4; i++)
 		{

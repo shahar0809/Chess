@@ -12,6 +12,8 @@
 #include "checkmate.h"
 
 #define BOARD_SIZE 8
+#define GET_SRC 2
+#define GET_DST 2
 #define STARTING_BOARD "rnbqkbnrpppppppp################################PPPPPPPPRNBQKBNR"
 
 class Piece;

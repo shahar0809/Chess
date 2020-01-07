@@ -7,25 +7,33 @@ Output: If there is a checkmate - checkmate code / else - check code (CODES enum
 */
 CODES checkmate::isCheckmate(Board& board, King* otherKing, Piece* attacker)
 {
+	if (!attacker)
+	{
+		return VALID_MOVE_CHECK;
+	}
 	std::string kingLocation = otherKing->getCurrLocation(), attackerLocation = attacker->getCurrLocation(), squareBetween = kingLocation, move = "";
 	bool isEscapingPath = false, canAttackerBeEated = false, isBlockingPiece = false;
 	bool isCheckMate = false;
+	board.setCurrPlayer(!board.getCurrPlayer());
+
 	/*Checking for a valid move to escape the attacker (checking if there's a valid King move for all possible destinations).*/
 
 	board.setCurrPlayer(!board.getCurrPlayer()); // Check moves of the oppenet.
 
-	isEscapingPath = 
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[COL] + 1)) + kingLocation[ROW]) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[COL] - 1)) + kingLocation[ROW]) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[COL] + 1)) + ((char)(kingLocation[ROW] + 1))) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[COL] + 1)) + ((char)(kingLocation[ROW] - 1))) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[COL] - 1)) + ((char)(kingLocation[ROW] - 1))) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[COL] - 1)) + ((char)(kingLocation[ROW] + 1))) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + kingLocation[COL] + ((char)(kingLocation[ROW] - 1))) &&
-		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + kingLocation[COL] + ((char)(kingLocation[ROW] - 1)));
+	isEscapingPath =
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[SRC_COL] + 1)) + kingLocation[SRC_ROW]) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[SRC_COL] - 1)) + kingLocation[SRC_ROW]) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[SRC_COL] + 1)) + ((char)(kingLocation[SRC_ROW] + 1))) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[SRC_COL] + 1)) + ((char)(kingLocation[SRC_ROW] - 1))) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[SRC_COL] - 1)) + ((char)(kingLocation[SRC_ROW] - 1))) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + ((char)(kingLocation[SRC_COL] - 1)) + ((char)(kingLocation[SRC_ROW] + 1))) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + kingLocation[SRC_COL] + ((char)(kingLocation[SRC_ROW] - 1))) ||
+		NO_PIECE_IN_SRC > board.isMoveValid(kingLocation + kingLocation[SRC_COL] + ((char)(kingLocation[SRC_ROW] - 1)));
 
+	board.setCurrPlayer(!board.getCurrPlayer());
+	std::cout << isEscapingPath << std::endl;
 	/*Checking if the attacker can be eaten.*/
-	
+
 	for (int i = 0; (i < board.getPieces().size()) && !canAttackerBeEated; i++)
 	{
 		if (NO_PIECE_IN_SRC > board.isMoveValid(board.getPieces()[i]->getCurrLocation() + attackerLocation))
@@ -33,15 +41,19 @@ CODES checkmate::isCheckmate(Board& board, King* otherKing, Piece* attacker)
 			canAttackerBeEated = true;
 		}
 	}
-	
+
+
 	isBlockingPiece = pieceBetween(attackerLocation, kingLocation, board);
-	
+
 	board.setCurrPlayer(!board.getCurrPlayer()); // Return the turn to the player.
 
 	isCheckMate = ((!isEscapingPath) && (!canAttackerBeEated) && (!isBlockingPiece));
 
-	
-	return isCheckMate ? CHECKMATE_MOTHER_F$$KER: VALID_MOVE_CHECK;
+
+	return isCheckMate ? CHECKMATE_MOTHER_F$$KER : VALID_MOVE_CHECK;
+
+
+	return !isEscapingPath && !canAttackerBeEated && !pieceBetween(attackerLocation, kingLocation, board) ? CHECKMATE_MOTHER_F$$KER : VALID_MOVE_CHECK;
 }
 
 /*

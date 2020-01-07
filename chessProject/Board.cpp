@@ -5,6 +5,7 @@ Board::Board()
 {
 	this->_currPlayer = 0;
 	Piece* p = nullptr;
+	std::string currLocation = "";
 	for (int i = 0; i < BOARD_SIZE; i++)
 	{
 		for (int j = 0; j < BOARD_SIZE; j++)
@@ -12,7 +13,7 @@ Board::Board()
 			this->_board[i] += STARTING_BOARD[i * BOARD_SIZE + j];
 		}
 	}
-	
+
 	/*Initializing board with the starting board.*/
 	/*Adding the 4 rooks.*/
 	p = new Rook("a8", true);
@@ -43,7 +44,7 @@ Board::Board()
 	this->_pieces.push_back(p);
 	p = new Bishop("f1", false);
 	this->_pieces.push_back(p);
-	
+
 	/*Adding the 4 knights.*/
 	p = new Knight("g8", true);
 	this->_pieces.push_back(p);
@@ -54,7 +55,7 @@ Board::Board()
 	p = new Knight("b1", false);
 	this->_pieces.push_back(p);
 
-	std::string currLocation = "00";
+	currLocation = "00";
 	/*Adding the 16 pawns*/
 	for (char i = MIN_INDEX_COL; i <= MAX_INDEX_COL; i++)
 	{
@@ -76,6 +77,7 @@ Board::~Board()
 	}
 }
 
+/*Getters.*/
 unsigned int Board::getNumOfPieces()
 {
 	return this->_pieces.size();
@@ -87,7 +89,7 @@ std::vector<Piece*> Board::getPieces()
 	return this->_pieces;
 }
 
-//getters.
+
 std::string* Board::getBoard()
 {
 	return this->_board;
@@ -114,15 +116,13 @@ bool Board::removePiece(std::string location)
 	int len = 0;
 	Piece* target = nullptr;
 	bool isTargetFound = false;
+
 	target = this->getPiece(location);
 
 	if (target)
 	{
-		// x && y of piece.
-
-		this->setBoard(location[SRC_ROW], location[SRC_COL], EMPTY_CELL);
-
-		target->setIsAlive(false);
+		this->setBoard(location[SRC_ROW], location[SRC_COL], EMPTY_CELL); //Remove from board.
+		target->setIsAlive(false); // Means dead.
 		isTargetFound = true;
 	}
 
@@ -136,11 +136,11 @@ Output: None.
 */
 void Board::setBoard(char x, char y, char piece)
 {
-	this->_board[(int)(x - MIN_INDEX_ROW)][(int)(y - MIN_INDEX_COL)] = piece;
+	this->_board[(int)(BOARD_SIZE - (x - MIN_INDEX_ROW)) - 1][(int)(y - MIN_INDEX_COL)] = piece;
 }
 
 /*
-This method searches for a piece on a current location on the board.
+This method searches for a piece on a current location on the board from the vector.
 Input: The location of the piece to find.
 Output: Returns a pointer to the piece if found, else nullptr.
 */
@@ -152,7 +152,10 @@ Piece* Board::getPiece(std::string location)
 
 	len = this->_pieces.size();
 
-	/*Searching for the piece in the pieces vector.*/
+	/*
+	Searching for the piece in the pieces vector.
+	The piece MUST be alive.
+	*/
 	for (int i = 0; (i < len) && !isTargetFound; i++)
 	{
 		if (this->_pieces[i]->getCurrLocation() == location && this->_pieces[i]->isAlive())
@@ -176,7 +179,7 @@ Piece* Board::isKingAttacked(King* king)
 	Piece* p = nullptr;
 	std::string src = "";
 
-	for (int i = 0; i< this->_pieces.size(); i++)
+	for (int i = 0; i < this->_pieces.size(); i++)
 	{
 		p = this->_pieces[i];
 		src = p->getCurrLocation();
@@ -202,8 +205,8 @@ Output: The code matching to the move (CODES enum).
 CODES Board::isMoveValid(std::string move)
 {
 	/*Getting the pieces at the src and dest cells.*/
-	std::string src = move.substr(0, move.length() / 2);
-	std::string dst = move.substr(DEST_COL, move.length() / 2);
+	std::string src = move.substr(0, move.length() / GET_SRC);
+	std::string dst = move.substr(DEST_COL, move.length() / GET_DST);
 	Piece* srcPiece = this->getPiece(src);
 	Piece* dstPiece = this->getPiece(dst);
 
@@ -212,11 +215,7 @@ CODES Board::isMoveValid(std::string move)
 	King* currKing = this->getKing(this->_currPlayer);
 
 	/*2 - Checking that there's a piece of the current player in the src cell.*/
-	if (!srcPiece)
-	{
-		return NO_PIECE_IN_SRC;
-	}
-	if (srcPiece->isBlack() != this->getCurrPlayer())
+	if (!srcPiece || srcPiece->isBlack() != this->getCurrPlayer())
 	{
 		return NO_PIECE_IN_SRC;
 	}
@@ -235,7 +234,7 @@ CODES Board::isMoveValid(std::string move)
 	}
 
 	/*7 - The src cell is also the dest cell.*/
-	if (move[SRC_COL] == move[DEST_COL] && move[SRC_ROW] == move[DEST_ROW])
+	if (src == dst)
 	{
 		return SRC_IS_DST;
 	}
@@ -244,22 +243,17 @@ CODES Board::isMoveValid(std::string move)
 	if (srcPiece->pieceType() == WHITE_PAWN || srcPiece->pieceType() == BLACK_PAWN)
 	{
 		/*If the pawn can't eat the dst piece.*/
-		if (moveValidator::moveDiagonally(move) && !dstPiece )
+		if (moveValidator::moveDiagonally(move) && !dstPiece)
 		{
 			return INVALID_PIECE_MOVE;
 		}
 	}
 
-
 	/*6 - check if the move is valid for the piece and it is not blocked by other piece*/
 	if (!srcPiece->isMoveValidPiece(move) || this->isBlockingPiece(dst, src, srcPiece->pieceType()))
 	{
 		return INVALID_PIECE_MOVE;
-	}
-	if ((srcPiece->pieceType() == BLACK_PAWN || srcPiece->pieceType() == WHITE_PAWN) && moveValidator::moveDiagonally(move) && !dstPiece)                            
-	{
-		return INVALID_PIECE_MOVE;
-	}
+	}                           
 
 	/*0,1,4 - Checking checks.*/
 	/*Making the move.*/
@@ -321,6 +315,12 @@ CODES Board::isMoveValid(std::string move)
 	return VALID_MOVE;
 }
 
+
+/*
+This method prints the board.
+Input: None.
+Output: None.
+*/
 void Board::printBoard()
 {
 	std::cout << std::endl;
@@ -329,14 +329,12 @@ void Board::printBoard()
 	{
 		std::cout << i << " ";
 
-		for (int j = 0; j < BOARD_SIZE; j++)
+		for (int j = BOARD_SIZE; j > 0; j--)
 		{
 			std::cout << this->_board[i - 1][j] << " ";
 		}
-
-		std::cout << i << std::endl;
 	}
-	std::cout << "  a b c d e f g h" << std::endl << std::endl;
+	
 }
 
 /*
@@ -375,6 +373,7 @@ CODES Board::makeMove(std::string move)
 		{
 			otherKing = this->getKing(!this->getCurrPlayer());
 			resultCode = checkmate::isCheckmate(*this, otherKing, this->isKingAttacked(otherKing));
+			setCurrPlayer(!this->_currPlayer); // changing player.
 		}
 		setCurrPlayer(!this->_currPlayer); // changing player.
 	}
@@ -426,7 +425,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 		while (dst != src)
 		{
 			src[index] += change;
-			if (this->getPiece(src) &&  src != dst)
+			if (this->getPiece(src) && src != dst)
 			{
 				return true;
 			}
@@ -443,7 +442,7 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 			sideChange = src[SRC_ROW] > dst[SRC_ROW] ? -1 : 1;
 			/*Moving to the next cell.*/
 			src[SRC_COL] += change;
-			src[SRC_ROW]+= sideChange;
+			src[SRC_ROW] += sideChange;
 
 			/*Checking if there's a piece in current location.*/
 			if (src != dst && getPieceAt(src[SRC_ROW], src[SRC_COL]) != EMPTY_CELL)
@@ -457,17 +456,17 @@ bool Board::isBlockingPiece(std::string dst, std::string src, char type)
 	if (type == WHITE_PAWN || type == BLACK_PAWN)
 	{
 		/*Pawn eating move.*/
-		if (abs(src[SRC_ROW] - dst[SRC_ROW]) == abs(src[SRC_COL] - dst[SRC_COL]) == 1) // A single move forwards.
+		if (abs(src[SRC_ROW] - dst[SRC_ROW]) == abs(src[SRC_COL] - dst[SRC_COL]) == 1) // A single move diagonally.
 		{
 			return false;
 		}
 		/*Normal move.*/
 		else
 		{
-			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL); // A single move diagonally.
+			return (this->getPieceAt(dst[SRC_ROW], dst[SRC_COL]) != EMPTY_CELL); // A single move forwards.
 		}
 	}
-	
+
 	/*No piece can block a KING and a KNIGHT.*/
 	return false;
 }
@@ -481,7 +480,7 @@ char Board::getPieceAt(char x, char y)
 {
 	if (x >= MIN_INDEX_ROW && x <= MAX_INDEX_ROW && y >= MIN_INDEX_COL && y <= MAX_INDEX_COL)
 	{
-		return this->_board[x - MIN_INDEX_ROW][y - MIN_INDEX_COL];
+		return this->_board[(int)(BOARD_SIZE - (x - MIN_INDEX_ROW)) - 1][(int)(y - MIN_INDEX_COL)];
 	}
 	/*Invalid Indices.*/
 	else

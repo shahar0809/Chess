@@ -14,7 +14,6 @@ CODES checkmate::isCheckmate(Board& board, King* otherKing, Piece* attacker)
 	std::string kingLocation = otherKing->getCurrLocation(), attackerLocation = attacker->getCurrLocation(), squareBetween = kingLocation, move = "";
 	bool isEscapingPath = false, canAttackerBeEated = false, isBlockingPiece = false;
 	bool isCheckMate = false;
-	board.setCurrPlayer(!board.getCurrPlayer());
 
 	/*Checking for a valid move to escape the attacker (checking if there's a valid King move for all possible destinations).*/
 
